@@ -7,7 +7,9 @@ ENV GOLANG_VERSION 1.8.3
 ENV GOPATH /go
 ENV PATH $GOPATH/bin:/usr/local/go/bin:$PATH
 # 设置locale，进入终端可以输入中文
-ENV LANG C.UTF-8
+RUN apt-get update && apt-get install -y locales && rm -rf /var/lib/apt/lists/* \
+    && localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
+ENV LANG en_US.utf8
 # 设置容器时区
 ENV TZ "Asia/Shanghai"
 
