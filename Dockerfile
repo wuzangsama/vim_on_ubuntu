@@ -7,7 +7,7 @@ ENV GOLANG_VERSION 1.8.3
 ENV GOPATH /go
 ENV PATH $GOPATH/bin:/usr/local/go/bin:$PATH
 # 设置locale，进入终端可以输入中文
-ENV LANG C
+ENV LANG C.UTF-8
 # 设置容器时区
 ENV TZ "Asia/Shanghai"
 
@@ -20,7 +20,8 @@ RUN apt update -y \
 # 安装zsh和oh-my-zsh
     && apt install -y zsh \
     && apt install -y curl \
-    # && sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)" \
+    && sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)" \
+    && chsh -s /usr/bin/zsh \
 # 安装vim需要的工具包
     && apt install -y cmake \
     && apt install -y clang \

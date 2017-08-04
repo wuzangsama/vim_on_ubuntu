@@ -206,7 +206,7 @@ function! LoadColorSchemeGruvbox()
     let g:airline_theme="gruvbox"
     call LoadAirline()
 endfunction
-execute LoadColorSchemeMolokai()
+execute LoadColorSchemeGruvbox()
 
 " *.cpp 和 *.h 间切换
 function! LoadFswitch()
