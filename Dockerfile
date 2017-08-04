@@ -32,7 +32,7 @@ RUN apt update -y \
     && apt install -y ruby \
     && apt install -y ruby-dev \
     && apt install -y lua5.1 \
-    && apt install -y liblua5.1-0-dev
+    && apt install -y liblua5.1-0-dev \
     && apt install -y luajit \
     && apt install -y libluajit-5.1-dev \
     && apt install -y perl \
