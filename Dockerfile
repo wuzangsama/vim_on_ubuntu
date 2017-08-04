@@ -96,12 +96,12 @@ RUN cd /usr/local/src \
     && git clone https://github.com/Shougo/unite.vim.git ~/.vim/bundle/unite.vim \
     && git clone https://github.com/shougo/vimfiler.vim.git ~/.vim/bundle/vimfiler.vim \
 # vim其他插件安装
-    && vim +PlugInstall +qall \
+    && vim +PlugInstall +qall
 # 安装ohmyzsh
-    && sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+    # && sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 
 COPY mysnippets/* /root/.vim/bundle/ultisnips/mysnippets/
-COPY .zshrc /root/
+# COPY .zshrc /root/
 COPY .tmux.conf /root/
 
 #work dir
