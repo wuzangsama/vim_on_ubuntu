@@ -92,7 +92,7 @@ RUN cd /usr/local/src \
 # 安装vim初次启动需要的插件
     && curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
         https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim \
-    && git clone https://github.com/tomasr/molokai.git ~/.vim/bundle/molokai \
+    && git clone https://github.com/morhetz/gruvbox.git ~/.vim/bundle/gruvbox \
     && git clone https://github.com/Shougo/unite.vim.git ~/.vim/bundle/unite.vim \
     && git clone https://github.com/shougo/vimfiler.vim.git ~/.vim/bundle/vimfiler.vim \
 # vim其他插件安装
