@@ -311,6 +311,7 @@ function! LoadYcm()
     let g:ycm_semantic_triggers =  {'c' : ['->', '.'], 'objc' : ['->', '.'], 'ocaml' : ['.', '#'], 'cpp,objcpp' : ['->', '.', '::'], 'php' : ['->', '::'], 'cs,java,javascript,vim,coffee,python,scala,go' : ['.'], 'ruby' : ['.', '::']}
     nnoremap <leader>j :YcmCompleter GoToDefinitionElseDeclaration<CR>"
 endfunction
+execute LoadYcm()
 
 function! LoadMultipleCursors()
     let g:multi_cursor_next_key='<S-M>' " 选中
