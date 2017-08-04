@@ -17,10 +17,9 @@ RUN apt update -y \
     && apt install -y subversion \
     && apt install -y git \
     && apt install -y man \
-# 安装zsh和oh-my-zsh
-    && apt install -y zsh \
+    && apt install -y wget \
     && apt install -y curl \
-    && sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)" \
+    && apt install -y zsh \
 # 安装vim需要的工具包
     && apt install -y cmake \
     && apt install -y clang \
@@ -46,7 +45,6 @@ RUN apt update -y \
     && apt install -y python3-dev \
     && apt install -y libtool \
     && apt install -y automake \
-    && apt install -y wget \
 # 清理
     && rm -rf /var/lib/apt/lists/*
 # 安装go
@@ -96,7 +94,9 @@ RUN cd /usr/local/src \
     && git clone https://github.com/Shougo/unite.vim.git ~/.vim/bundle/unite.vim \
     && git clone https://github.com/shougo/vimfiler.vim.git ~/.vim/bundle/vimfiler.vim \
 # vim其他插件安装
-    && vim +PlugInstall +qall
+    && vim +PlugInstall +qall \
+# 安装ohmyzsh
+    && sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 
 COPY mysnippets/* /root/.vim/bundle/ultisnips/mysnippets/
 COPY .zshrc /root/
