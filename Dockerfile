@@ -21,7 +21,6 @@ RUN apt update -y \
     && apt install -y zsh \
     && apt install -y curl \
     && sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)" \
-    && chsh -s /usr/bin/zsh \
 # 安装vim需要的工具包
     && apt install -y cmake \
     && apt install -y clang \
@@ -100,7 +99,7 @@ RUN cd /usr/local/src \
     && vim +PlugInstall +qall
 
 COPY mysnippets/* /root/.vim/bundle/ultisnips/mysnippets/
-# COPY .zshrc /root/
+COPY .zshrc /root/
 COPY .tmux.conf /root/
 
 #work dir
