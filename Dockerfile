@@ -64,7 +64,7 @@ COPY .vimrc /root/
 RUN cd /usr/local/src \
     && git clone https://github.com/vim/vim.git \
     && cd vim \
-    && git checkout v8.0.0858
+    && git checkout v8.0.0858 \
     && ./configure --prefix=/usr \
         --with-features=huge \
         --enable-multibyte \
