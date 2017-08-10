@@ -16,6 +16,8 @@ ENV TZ "Asia/Shanghai"
 RUN apt update -y \
 # 安装开发工具包和man
     && apt install -y build-essential \
+    && apt install -y gdb \
+    && apt install -y valgrind \
     && apt install -y subversion \
     && apt install -y git \
     && apt install -y man \

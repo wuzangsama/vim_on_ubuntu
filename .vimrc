@@ -25,6 +25,10 @@ set guioptions-=T
 set laststatus=2 " 总是显示状态栏
 set ruler " 显示光标当前位置
 
+" 退出保留显示
+set t_ti=
+set t_te=
+
 " 开启行号显示
 set number
 set relativenumber
