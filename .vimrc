@@ -25,9 +25,36 @@ set guioptions-=T
 set laststatus=2 " 总是显示状态栏
 set ruler " 显示光标当前位置
 
+" 滚动保留行数
+set scrolloff=3
+set sidescroll=1
+set sidescrolloff=10
+
 " 退出保留显示
 set t_ti=
 set t_te=
+
+" 设置list
+set list
+set listchars=tab:▸\ ,eol:¬,extends:❯,precedes:❮,space:·
+
+set wildmenu " vim 自身命令行模式智能补全
+set wildmode=list:longest
+set wildignore+=.hg,.git,.svn                    " Version control
+set wildignore+=*.aux,*.out,*.toc                " LaTeX intermediate files
+set wildignore+=*.jpg,*.bmp,*.gif,*.png,*.jpeg   " binary images
+set wildignore+=*.o,*.obj,*.exe,*.dll,*.so,*.manifest " compiled object files
+set wildignore+=*.spl                            " compiled spelling word lists
+set wildignore+=*.sw?                            " Vim swap files
+set wildignore+=*.DS_Store                       " OSX bullshit
+set wildignore+=*.luac                           " Lua byte code
+set wildignore+=migrations                       " Django migrations
+set wildignore+=*.pyc                            " Python byte code
+set wildignore+=*.orig                           " Merge resolution files
+set wildignore+=*.fasl                           " Lisp FASLs
+
+set lazyredraw
+set ttyfast
 
 " 开启行号显示
 set number
@@ -40,7 +67,6 @@ set cursorline
 set hlsearch " 高亮显示搜索结果
 set incsearch " 开启实时搜索功能
 set ignorecase " 搜索时大小写不敏感
-set wildmenu " vim 自身命令行模式智能补全
 set nowrap " 禁止折行
 set expandtab " 将制表符扩展为空格
 set tabstop=4 " 设置编辑时制表符占用空格数
@@ -69,10 +95,18 @@ filetype indent on " 自适应不同语言的智能缩进
 
 set guifont=Source\ Code\ Pro\ for\ Powerline:h14 " 设置 gvim 显示字体
 
-if has("autocmd")
+augroup position
+    au!
     au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif " 启动后定位到上次关闭光标位置
     "autocmd BufWritePost $MYVIMRC source $MYVIMRC " 让配置变更立即生效
-endif
+augroup END
+
+augroup cline " normal模式才显示cursorline
+    au!
+    au WinLeave,InsertEnter * set nocursorline
+    au WinEnter,InsertLeave * set cursorline
+augroup END
+
 
 if has('nvim')
     let $NVIM_TUI_ENABLE_TRUE_COLOR=1
@@ -329,7 +363,6 @@ endfunction
 execute LoadRainbow()
 
 function! LoadCommandT()
-    set wildignore+=*.o,*.obj,.git,.svn,*.pyc,*.so,Library*
     let g:CommandTWildIgnore=&wildignore
     let g:CommandTMaxHeight = 15
     let g:CommandTMaxFiles = 500000
@@ -571,6 +604,17 @@ execute LoadVimGo()
 " 定义快捷键到行首和行尾
 nnoremap LB 0
 nnoremap LE $
+
+noremap j gj
+noremap k gk
+noremap gj j
+noremap gk k
+
+" 复制到行尾
+nnoremap Y y$
+
+" 清除行尾空格
+nnoremap <F2> mz:%s/\s\+$//<cr>:let @/=''<cr>`z
 
 " 定义快捷键关闭当前分割窗口
 nnoremap <leader>q :q<CR>
