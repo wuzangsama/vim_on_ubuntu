@@ -613,6 +613,10 @@ noremap gk k
 " 复制到行尾
 nnoremap Y y$
 
+" 选中连续缩进
+vnoremap < <gv
+vnoremap > >gv
+
 " 清除行尾空格
 nnoremap <F2> mz:%s/\s\+$//<cr>:let @/=''<cr>`z
 
