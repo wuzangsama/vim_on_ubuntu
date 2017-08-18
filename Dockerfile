@@ -24,6 +24,8 @@ RUN apt update -y \
     && apt install -y wget \
     && apt install -y curl \
     && apt install -y zsh \
+    && git clone --depth=1 https://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh \
+    && chsh -s /bin/zsh \
 # 安装vim需要的工具包
     && apt install -y cmake \
     && apt install -y clang \
@@ -105,6 +107,7 @@ RUN cd /usr/local/src \
 COPY mysnippets/* /root/.vim/bundle/ultisnips/mysnippets/
 # COPY .zshrc /root/
 COPY .tmux.conf /root/
+COPY robbyrussell.zsh-theme ~/.oh-my-zsh/themes/
 
 #work dir
 WORKDIR /work
