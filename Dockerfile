@@ -105,9 +105,9 @@ RUN cd /usr/local/src \
     # && sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 
 COPY mysnippets/* /root/.vim/bundle/ultisnips/mysnippets/
-# COPY .zshrc /root/
 COPY .tmux.conf /root/
 COPY robbyrussell.zsh-theme ~/.oh-my-zsh/themes/
+COPY .zshrc /root/
 
 #work dir
 WORKDIR /work
