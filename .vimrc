@@ -180,6 +180,7 @@ Plug 'shougo/neoyank.vim'
 Plug 'vim-scripts/vim-unite-cscope'
 Plug 'terryma/vim-smooth-scroll'
 Plug 'wuzangsama/vim-go', { 'do': ':GoInstallBinaries' }
+Plug 'Chiel92/vim-autoformat'
 
 " 插件列表结束
 call plug#end()
@@ -306,6 +307,9 @@ function! LoadSyntastic()
     let g:syntastic_cpp_checkers = ['clang_check']
     let g:syntastic_c_checkers = ['clang_check']
     let g:syntastic_clang_check_config_file = '.clang'
+
+    let g:syntastic_go_checkers = ['golint', 'govet', 'go']
+    let g:syntastic_go_gometalinter_args = ['--disable-all', '--enable=errcheck']
 endfunction
 execute LoadSyntastic()
 
@@ -646,9 +650,6 @@ nnoremap <C-j> <C-w>j
 source $VIMRUNTIME/ftplugin/man.vim
 " 定义;h命令查看各类man信息的快捷键
 nnoremap <leader>h :Man 3 <cword><CR>
-
-" cd到buffer所在目录
-noremap <leader>cd :cd %:p:h<cr>
 
 if has("cscope")
     set csprg=/usr/bin/cscope              "指定用来执行 cscope 的命令
