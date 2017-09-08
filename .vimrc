@@ -154,7 +154,7 @@ Plug 'derekwyatt/vim-protodef',{'for': 'cpp'}
 Plug 'junegunn/vim-easy-align'
 Plug 'vim-scripts/DoxygenToolkit.vim',{'for': ['cpp', 'c']}
 " Plug 'w0rp/ale'
-Plug 'vim-syntastic/syntastic',{'for': ['cpp', 'c']}
+Plug 'vim-syntastic/syntastic',{'for': ['cpp', 'c', 'go']}
 Plug 'Valloric/YouCompleteMe', {'do': './install.py --clang-completer --system-libclang'}
 Plug 'raimondi/delimitmate'
 Plug 'luochen1990/rainbow'
@@ -310,7 +310,7 @@ function! LoadSyntastic()
     let g:syntastic_c_checkers = ['clang_check']
     let g:syntastic_clang_check_config_file = '.clang'
 
-    let g:syntastic_go_checkers = ['golint', 'govet', 'go']
+    let g:syntastic_go_checkers = ['golint', 'govec', 'gometalinter']
     let g:syntastic_go_gometalinter_args = ['--disable-all', '--enable=errcheck']
 endfunction
 execute LoadSyntastic()
@@ -573,7 +573,6 @@ function! LoadVimGo()
 
         " Show by default 4 spaces for a tab
         autocmd BufNewFile,BufRead *.go setlocal noexpandtab tabstop=4 shiftwidth=4
-        autocmd BufWritePost,BufReadPost *.go silent GoMetaLinter
 
         " :GoBuild and :GoTestCompile
         autocmd FileType go nmap <leader>b :<C-u>call <SID>build_go_files()<CR>
