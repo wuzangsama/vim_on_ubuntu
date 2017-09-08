@@ -12,6 +12,7 @@ set nocompatible " 关闭兼容模式
 let mapleader=';' " 定义快捷键的前缀，即 <leader>
 set gcr=a:block-blinkon0 " 禁止光标闪烁
 set mousemodel=popup_setpos " 右击鼠标跳出菜单
+set mouse=a
 set backspace=indent,eol,start " 退格键可用删除
 
 " 禁止显示滚动条和菜单、工具条
@@ -101,11 +102,11 @@ augroup position
     "autocmd BufWritePost $MYVIMRC source $MYVIMRC " 让配置变更立即生效
 augroup END
 
-augroup cline " normal模式才显示cursorline
-    au!
-    au WinLeave,InsertEnter * set nocursorline
-    au WinEnter,InsertLeave * set cursorline
-augroup END
+" augroup cline " normal模式才显示cursorline
+"     au!
+"     au WinLeave,InsertEnter * set nocursorline
+"     au WinEnter,InsertLeave * set cursorline
+" augroup END
 
 
 if has('nvim')
@@ -128,7 +129,6 @@ endif
 " 插件安装>>
 "=========================================
 
-" vim-plug 环境设置
 filetype off
 " vim-plug 管理的插件列表必须位于 call plug#begin() 和 call plug#end() 之间
 if has('nvim')
@@ -142,20 +142,20 @@ Plug 'altercation/vim-colors-solarized'
 Plug 'morhetz/gruvbox'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-Plug 'octol/vim-cpp-enhanced-highlight'
+Plug 'octol/vim-cpp-enhanced-highlight',{'for': 'cpp'}
 Plug 'Yggdroot/indentLine'
 Plug 'easymotion/vim-easymotion'
 Plug 'vim-scripts/matchit.zip'
-Plug 'derekwyatt/vim-fswitch'
-Plug 'derekwyatt/vim-protodef'
-Plug 'kshenoy/vim-signature'
-Plug 'tpope/vim-surround'
-Plug 'tpope/vim-repeat'
+Plug 'derekwyatt/vim-fswitch',{'for': 'cpp'}
+Plug 'derekwyatt/vim-protodef',{'for': 'cpp'}
+" Plug 'kshenoy/vim-signature'
+" Plug 'tpope/vim-surround'
+" Plug 'tpope/vim-repeat'
 Plug 'junegunn/vim-easy-align'
-Plug 'vim-scripts/DoxygenToolkit.vim'
+Plug 'vim-scripts/DoxygenToolkit.vim',{'for': ['cpp', 'c']}
 " Plug 'w0rp/ale'
-Plug 'vim-syntastic/syntastic'
-Plug 'Valloric/YouCompleteMe', {'do' : './install.py --clang-completer --system-libclang'}
+Plug 'vim-syntastic/syntastic',{'for': ['cpp', 'c']}
+Plug 'Valloric/YouCompleteMe', {'do': './install.py --clang-completer --system-libclang'}
 Plug 'raimondi/delimitmate'
 Plug 'luochen1990/rainbow'
 Plug 'tomtom/tcomment_vim' " 注释 gcc gcu gcap
@@ -163,23 +163,23 @@ Plug 'SirVer/ultisnips'
 Plug 'terryma/vim-multiple-cursors'
 Plug 'terryma/vim-expand-region' " + 选中片段 - 不选中
 Plug 'vim-scripts/Mark--Karkat' "多个高亮 <leader>m
-Plug 'nvie/vim-togglemouse'
+" Plug 'nvie/vim-togglemouse'
 " Plug 'wincent/command-t', {
 "     \   'do': 'cd ruby/command-t/ext/command-t && ruby extconf.rb && make'
 "     \ }
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'shougo/vimshell.vim'
-Plug 'Shougo/vimproc.vim', {'do' : 'make'}
+Plug 'Shougo/vimproc.vim', {'do': 'make'}
 Plug 'Shougo/vinarise.vim'
 Plug 'shougo/vimfiler.vim'
 Plug 'Shougo/unite.vim'
 Plug 'shougo/unite-outline'
 Plug 'shougo/neomru.vim'
 Plug 'shougo/neoyank.vim'
-Plug 'vim-scripts/vim-unite-cscope'
-Plug 'terryma/vim-smooth-scroll'
-Plug 'wuzangsama/vim-go', { 'do': ':GoInstallBinaries' }
+Plug 'vim-scripts/vim-unite-cscope',{'for': ['cpp', 'c']}
+" Plug 'terryma/vim-smooth-scroll'
+Plug 'wuzangsama/vim-go', {'do': ':GoInstallBinaries'}
 Plug 'Chiel92/vim-autoformat'
 
 " 插件列表结束
@@ -294,7 +294,9 @@ function! LoadAle()
     let g:ale_open_list=1
     let g:ale_set_quickfix=1
     let g:ale_lint_on_text_changed='never'
+    let g:ale_linters = {'go':['gometalinter','gofmt']}
 endfunction
+" execute LoadAle()
 
 function! LoadSyntastic()
     set statusline+=%#warningmsg#
@@ -363,6 +365,28 @@ execute LoadMultipleCursors()
 
 function! LoadRainbow()
     let g:rainbow_active = 1
+    let g:rainbow_conf = {
+                \	'guifgs': ['royalblue3', 'darkorange3', 'seagreen3', 'firebrick'],
+                \	'ctermfgs': ['lightblue', 'lightyellow', 'lightcyan', 'lightmagenta'],
+                \	'operators': '_,_',
+                \	'parentheses': ['start=/(/ end=/)/ fold', 'start=/\[/ end=/\]/ fold', 'start=/{/ end=/}/ fold'],
+                \	'separately': {
+                \		'*': {},
+                \		'tex': {
+                \			'parentheses': ['start=/(/ end=/)/', 'start=/\[/ end=/\]/'],
+                \		},
+                \		'lisp': {
+                \			'guifgs': ['royalblue3', 'darkorange3', 'seagreen3', 'firebrick', 'darkorchid3'],
+                \		},
+                \		'vim': {
+                \			'parentheses': ['start=/(/ end=/)/', 'start=/\[/ end=/\]/', 'start=/{/ end=/}/ fold', 'start=/(/ end=/)/ containedin=vimFuncBody', 'start=/\[/ end=/\]/ containedin=vimFuncBody', 'start=/{/ end=/}/ fold containedin=vimFuncBody'],
+                \		},
+                \		'html': {
+                \			'parentheses': ['start=/\v\<((area|base|br|col|embed|hr|img|input|keygen|link|menuitem|meta|param|source|track|wbr)[ >])@!\z([-_:a-zA-Z0-9]+)(\s+[-_:a-zA-Z0-9]+(\=("[^"]*"|'."'".'[^'."'".']*'."'".'|[^ '."'".'"><=`]*))?)*\>/ end=#</\z1># fold'],
+                \		},
+                \		'css': 0,
+                \	}
+                \}
 endfunction
 execute LoadRainbow()
 
@@ -526,7 +550,7 @@ function! LoadSmoothScroll()
     noremap <silent> <c-b> :call smooth_scroll#up(&scroll*2, 0, 4)<CR>
     noremap <silent> <c-f> :call smooth_scroll#down(&scroll*2, 0, 4)<CR>
 endfunction
-execute LoadSmoothScroll()
+" execute LoadSmoothScroll()
 
 function! LoadVimGo()
     let g:go_fmt_command = "goimports"
@@ -549,6 +573,7 @@ function! LoadVimGo()
 
         " Show by default 4 spaces for a tab
         autocmd BufNewFile,BufRead *.go setlocal noexpandtab tabstop=4 shiftwidth=4
+        autocmd BufWritePost,BufReadPost *.go silent GoMetaLinter
 
         " :GoBuild and :GoTestCompile
         autocmd FileType go nmap <leader>b :<C-u>call <SID>build_go_files()<CR>
