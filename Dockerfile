@@ -3,7 +3,7 @@ FROM ubuntu:17.04
 MAINTAINER Haifeng Zhang "zhanghf@zailingtech.com"
 
 # 设置go相关环境变量
-ENV GOLANG_VERSION 1.8.3
+ENV GOLANG_VERSION 1.9
 ENV GOPATH /go
 ENV PATH $GOPATH/bin:/usr/local/go/bin:$PATH
 # 设置locale，进入终端可以输入中文
