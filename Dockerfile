@@ -1,9 +1,9 @@
-FROM ubuntu:17.04
+FROM ubuntu:17.10
 
 MAINTAINER Haifeng Zhang "zhanghf@zailingtech.com"
 
 # 设置go相关环境变量
-ENV GOLANG_VERSION 1.8.3
+ENV GOLANG_VERSION 1.9.1
 ENV GOPATH /go
 ENV PATH $GOPATH/bin:/usr/local/go/bin:$PATH
 # 设置locale，进入终端可以输入中文
@@ -67,7 +67,7 @@ COPY .vimrc /root/
 RUN cd /usr/local/src \
     && git clone https://github.com/vim/vim.git \
     && cd vim \
-    && git checkout v8.0.0858 \
+    && git checkout v8.0.1236 \
     && ./configure --prefix=/usr \
         --with-features=huge \
         --enable-multibyte \
@@ -104,7 +104,6 @@ RUN cd /usr/local/src \
 # 安装ohmyzsh
     # && sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 
-COPY mysnippets/* /root/.vim/bundle/ultisnips/mysnippets/
 COPY .tmux.conf /root/
 COPY robbyrussell.zsh-theme ~/.oh-my-zsh/themes/
 COPY .zshrc /root/
@@ -112,3 +111,5 @@ COPY .zshrc /root/
 #work dir
 WORKDIR /work
 
+#cmd
+CMD zsh
