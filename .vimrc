@@ -64,7 +64,7 @@ set sidescrolloff=10
 
 " 设置list
 set list
-set listchars=tab:▸\,extends:❯,precedes:❮,trail:•
+set listchars=tab:›\ ,trail:•
 
 set wildmenu " vim 自身命令行模式智能补全
 set wildmode=list:longest
@@ -188,7 +188,6 @@ Plug 'tomtom/tcomment_vim' " 注释 gcc gcu gcap
 Plug 'SirVer/ultisnips'
 Plug 'terryma/vim-multiple-cursors'
 Plug 'terryma/vim-expand-region' " + 选中片段 - 不选中
-Plug 'vim-scripts/Mark--Karkat' "多个高亮 <leader>m
 Plug 'nvie/vim-togglemouse'
 Plug 'shougo/vimshell.vim'
 Plug 'Shougo/vimproc.vim', {'do': 'make'}
@@ -201,7 +200,9 @@ Plug 'shougo/neoyank.vim'
 Plug 'vim-scripts/vim-unite-cscope',{'for': ['cpp', 'c']}
 Plug 'terryma/vim-smooth-scroll'
 Plug 'wuzangsama/vim-go', {'do': ':GoInstallBinaries'}
+Plug 'buoto/gotests-vim'
 Plug 'Chiel92/vim-autoformat'
+Plug 'dyng/ctrlsf.vim'
 if executable('ctags')
     Plug 'majutsushi/tagbar'
 endif
@@ -337,9 +338,7 @@ function! LoadAle()
     let g:ale_lint_on_text_changed='never'
     let g:ale_linters = {'go':['gometalinter','gofmt']}
 endfunction
-" if filereadable(expand("~/.vim/bundle/DoxygenToolkit.vim/plugin/DoxygenToolkit.vim"))
-"     execute LoadAle()
-" endif
+" execute LoadAle()
 
 function! LoadSyntastic()
     set statusline+=%#warningmsg#
@@ -398,6 +397,7 @@ function! LoadYcm()
     let g:ycm_min_num_of_chars_for_completion = 2
     let g:ycm_seed_identifiers_with_syntax = 1
     let g:ycm_semantic_triggers =  {'c' : ['->', '.'], 'objc' : ['->', '.'], 'ocaml' : ['.', '#'], 'cpp,objcpp' : ['->', '.', '::'], 'php' : ['->', '::'], 'cs,java,javascript,vim,coffee,python,scala,go' : ['.'], 'ruby' : ['.', '::']}
+    set completeopt-=preview
     nnoremap <leader>j :YcmCompleter GoToDefinitionElseDeclaration<CR>"
 endfunction
 if filereadable(expand("~/.vim/bundle/YouCompleteMe/plugin/youcompleteme.vim"))
@@ -405,8 +405,8 @@ if filereadable(expand("~/.vim/bundle/YouCompleteMe/plugin/youcompleteme.vim"))
 endif
 
 function! LoadMultipleCursors()
-    let g:multi_cursor_next_key='<S-M>' " 选中
-    let g:multi_cursor_skip_key='<S-K>' " 跳过
+    let g:multi_cursor_next_key='<Leader>n' " 选中
+    let g:multi_cursor_skip_key='<Leader>k' " 跳过
 endfunction
 if filereadable(expand("~/.vim/bundle/vim-multiple-cursors/plugin/multiple_cursors.vim"))
     execute LoadMultipleCursors()
@@ -501,11 +501,9 @@ function! LoadUnite()
     nnoremap <Space><Space> :Unite<cr>
     nnoremap <Space>f :Unite file/async<cr>
     nnoremap <Space>b :Unite buffer<cr>
-    nnoremap <Space>g :Unite grep<cr><cr>
     nnoremap <Space>r :Unite file_mru<cr>
     nnoremap <Space>o :Unite outline<cr>
     nnoremap <Space>hy :Unite history/yank<cr>
-    nnoremap <Space>hu :Unite history/unite<cr>
     nnoremap <Space>ci :Unite cscope/functions_calling<cr>
     nnoremap <Space>cb :Unite cscope/functions_called_by<cr>
     nnoremap <Space>cf :Unite cscope/find_this_symbol<cr>
@@ -629,7 +627,6 @@ function! LoadVimGo()
 
         " Show by default 4 spaces for a tab
         autocmd BufNewFile,BufRead *.go setlocal noexpandtab tabstop=4 shiftwidth=4
-        autocmd FileType go set listchars-=tab
 
         " :GoBuild and :GoTestCompile
         autocmd FileType go nmap <leader>b :<C-u>call <SID>build_go_files()<CR>
@@ -675,7 +672,7 @@ function! LoadVimGo()
         endif
     endfunction
 endfunction
-if isdirectory(expand("~/.vim/bundle/vim-go/plugin/go.vim"))
+if filereadable(expand("~/.vim/bundle/vim-go/plugin/go.vim"))
     execute LoadVimGo()
 endif
 
@@ -684,8 +681,17 @@ function! LoadTagbar()
     inoremap <F2> <ESC>:TagbarToggle<CR>
     vnoremap <F2> <ESC>:TagbarToggle<CR>
 endfunction
-if isdirectory(expand("~/.vim/bundle/tagbar/plugin/tagbar.vim"))
+if filereadable(expand("~/.vim/bundle/tagbar/plugin/tagbar.vim"))
     execute LoadTagbar()
+endif
+
+function! LoadCtrlSF()
+    let g:ctrlsf_ackprg = 'ag'
+    let g:ctrlsf_auto_close = 0
+    let g:ctrlsf_case_sensitive = 'no'
+endfunction
+if filereadable(expand("~/.vim/bundle/ctrlsf.vim/plugin/ctrlsf.vim"))
+    execute LoadCtrlSF()
 endif
 
 "=========================================
@@ -713,9 +719,6 @@ nnoremap Y y$
 vnoremap < <gv
 vnoremap > >gv
 
-" 清除行尾空格
-nnoremap <F2> mz:%s/\s\+$//<cr>:let @/=''<cr>`z
-
 " 定义快捷键关闭当前分割窗口
 nnoremap <leader>q :q<CR>
 " 定义快捷键保存当前窗口内容
@@ -725,7 +728,7 @@ nnoremap <leader>WQ :wa<CR>:q<CR>
 " 不做任何保存，直接退出 vim
 nnoremap <leader>Q :qa!<CR>
 
-nnoremap <silent> <leader>/ :nohlsearch<CR>
+nnoremap <leader>/ :nohlsearch<CR>
 
 cmap cwd lcd %:p:h
 cmap cd. lcd %:p:h
@@ -813,6 +816,37 @@ nnoremap <leader>rc :call Replace(1, 0, input('Replace '.expand('<cword>').' wit
 " 确认、整词
 nnoremap <leader>rcw :call Replace(1, 1, input('Replace '.expand('<cword>').' with: '))<CR>
 nnoremap <leader>rwc :call Replace(1, 1, input('Replace '.expand('<cword>').' with: '))<CR>
+
+" Strip whitespace
+function! StripTrailingWhitespace()
+    " Preparation: save last search, and cursor position.
+    let _s=@/
+    let l = line(".")
+    let c = col(".")
+    " do the business:
+    %s/\s\+$//e
+    " clean up: restore previous search history, and cursor position
+    let @/=_s
+    call cursor(l, c)
+endfunction
+" Remove trailing whitespaces and ^M chars
+autocmd FileType c,cpp,java,php,javascript,python,rust,xml,yml,perl,sql autocmd BufWritePre <buffer> call StripTrailingWhitespace()
+
+" 搜索选中项 {
+function! VisualSelection() range
+    let l:saved_reg = @"
+    execute "normal! vgvy"
+
+    let l:pattern = escape(@", '\\/.*$^~[]')
+    let l:pattern = substitute(l:pattern, "\n$", "", "")
+
+    execute 'CtrlSF '.l:pattern
+
+    let @/ = l:pattern
+    let @" = l:saved_reg
+endfunction
+vnoremap <Space>g :call VisualSelection()<CR>
+nnoremap <Space>g :CtrlSF 
 
 " 将外部命令 wmctrl 控制窗口最大化的命令行参数封装成一个 vim 的函数
 " fun! ToggleFullscreen()
