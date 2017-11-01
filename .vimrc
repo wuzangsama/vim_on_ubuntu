@@ -242,7 +242,7 @@ endif
 " GoLang {
 if count(g:wuzang_plugin_group, 'go')
     "Plug 'Blackrush/vim-gocode'
-    Plug 'fatih/vim-go', {'do': ':GoInstallBinaries'}
+    Plug 'fatih/vim-go'
     Plug 'buoto/gotests-vim'
 endif
 " GoLang}

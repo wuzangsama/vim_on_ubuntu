@@ -56,10 +56,28 @@ RUN apt update -y \
 # 安装go
 RUN goRelArch='linux-amd64' \
     && url="https://golang.org/dl/go${GOLANG_VERSION}.${goRelArch}.tar.gz" \
+    && export https_proxy=172.18.30.248:1080 \
     && wget -O go.tgz "$url" \
     && tar -C /usr/local -xzf go.tgz \
     && rm go.tgz \
-    && go version
+    && go version \
+    && go get github.com/klauspost/asmfmt/cmd/asmfmt \
+    && go get github.com/kisielk/errcheck \
+    && go get github.com/davidrjenni/reftools/cmd/fillstruct \
+    && go get github.com/nsf/gocode \
+    && go get github.com/rogpeppe/godef \
+    && go get github.com/zmb3/gogetdoc \
+    && go get golang.org/x/tools/cmd/goimports \
+    && go get github.com/golang/lint/golint \
+    && go get github.com/alecthomas/gometalinter \
+    && go get github.com/fatih/gomodifytags \
+    && go get golang.org/x/tools/cmd/gorename \
+    && go get github.com/jstemmer/gotags \
+    && go get golang.org/x/tools/cmd/guru \
+    && go get github.com/josharian/impl \
+    && go get github.com/dominikh/go-tools/cmd/keyify \
+    && go get github.com/fatih/motion \
+    && go get -u github.com/cweill/gotests/...
 
 # 安装vim
 COPY .vimrc /root/
