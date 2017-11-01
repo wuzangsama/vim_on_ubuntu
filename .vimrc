@@ -383,7 +383,7 @@ if has('gui')
         color solarized             " Load a colorscheme
 
         if isdirectory(expand("~/.vim/bundle/vim-airline-themes/"))
-            let g:airline_theme = 'solarized '
+            let g:airline_theme = 'solarized'
             " 这个是安装字体后 必须设置此项
             let g:airline_powerline_fonts = 1
             " 显示buffer栏和buffer编号
