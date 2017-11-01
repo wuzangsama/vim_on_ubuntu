@@ -383,21 +383,21 @@ if has('gui')
         color solarized             " Load a colorscheme
 
         if isdirectory(expand("~/.vim/bundle/vim-airline-themes/"))
-            let g:airline_theme = 'solarized '                                                                                                                                                                                                 
+            let g:airline_theme = 'solarized '
             " 这个是安装字体后 必须设置此项
-            let g:airline_powerline_fonts = 1 
+            let g:airline_powerline_fonts = 1
             " 显示buffer栏和buffer编号
-            " let g:airline#extensions#tabline#enabled = 1 
-            " let g:airline#extensions#tabline#buffer_nr_show = 1 
+            " let g:airline#extensions#tabline#enabled = 1
+            " let g:airline#extensions#tabline#buffer_nr_show = 1
 
             if !exists('g:airline_symbols')
                 let g:airline_symbols = {}
             endif
-            let g:airline_left_sep = '▶' 
-            let g:airline_left_alt_sep = '❯' 
-            let g:airline_right_sep = '◀' 
-            let g:airline_right_alt_sep = '❮' 
-            let g:airline_symbols.linenr = '¶' 
+            let g:airline_left_sep = '▶'
+            let g:airline_left_alt_sep = '❯'
+            let g:airline_right_sep = '◀'
+            let g:airline_right_alt_sep = '❮'
+            let g:airline_symbols.linenr = '¶'
         endif
     endif
 else
@@ -405,21 +405,21 @@ else
         color gruvbox
 
         if isdirectory(expand("~/.vim/bundle/vim-airline-themes/"))
-            let g:airline_theme = 'gruvbox'                                                                                                                                                                                                 
+            let g:airline_theme = 'gruvbox'
             " 这个是安装字体后 必须设置此项
-            let g:airline_powerline_fonts = 1 
+            let g:airline_powerline_fonts = 1
             " 显示buffer栏和buffer编号
-            " let g:airline#extensions#tabline#enabled = 1 
-            " let g:airline#extensions#tabline#buffer_nr_show = 1 
+            " let g:airline#extensions#tabline#enabled = 1
+            " let g:airline#extensions#tabline#buffer_nr_show = 1
 
             if !exists('g:airline_symbols')
                 let g:airline_symbols = {}
             endif
-            let g:airline_left_sep = '▶' 
-            let g:airline_left_alt_sep = '❯' 
-            let g:airline_right_sep = '◀' 
-            let g:airline_right_alt_sep = '❮' 
-            let g:airline_symbols.linenr = '¶' 
+            let g:airline_left_sep = '▶'
+            let g:airline_left_alt_sep = '❯'
+            let g:airline_right_sep = '◀'
+            let g:airline_right_alt_sep = '❮'
+            let g:airline_symbols.linenr = '¶'
         endif
     endif
 endif
