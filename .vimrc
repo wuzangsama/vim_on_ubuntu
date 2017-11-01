@@ -387,8 +387,8 @@ if has('gui')
             " 这个是安装字体后 必须设置此项
             let g:airline_powerline_fonts = 1 
             " 显示buffer栏和buffer编号
-            let g:airline#extensions#tabline#enabled = 1 
-            let g:airline#extensions#tabline#buffer_nr_show = 1 
+            " let g:airline#extensions#tabline#enabled = 1 
+            " let g:airline#extensions#tabline#buffer_nr_show = 1 
 
             if !exists('g:airline_symbols')
                 let g:airline_symbols = {}
@@ -409,8 +409,8 @@ else
             " 这个是安装字体后 必须设置此项
             let g:airline_powerline_fonts = 1 
             " 显示buffer栏和buffer编号
-            let g:airline#extensions#tabline#enabled = 1 
-            let g:airline#extensions#tabline#buffer_nr_show = 1 
+            " let g:airline#extensions#tabline#enabled = 1 
+            " let g:airline#extensions#tabline#buffer_nr_show = 1 
 
             if !exists('g:airline_symbols')
                 let g:airline_symbols = {}
