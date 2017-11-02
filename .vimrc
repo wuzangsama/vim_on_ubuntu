@@ -5,32 +5,6 @@
 " @date 2017-07-29
 
 "=========================================
-" 平台判断>>
-"=========================================
-silent function! OSX()
-return has('macunix')
-endfunction
-
-silent function! LINUX()
-return has('unix') && !has('macunix') && !has('win32unix')
-endfunction
-
-silent function! WINDOWS()
-return  (has('win32') || has('win64'))
-endfunction
-
-if !WINDOWS()
-    set shell=/bin/sh
-endif
-
-if WINDOWS()
-    set runtimepath=$HOME/.vim,$VIM/vimfiles,$VIMRUNTIME,$VIM/vimfiles/after,$HOME/.vim/after
-endif
-"=========================================
-" 平台判断<<
-"=========================================
-
-"=========================================
 " 基础>>
 "=========================================
 
@@ -129,11 +103,6 @@ augroup position
     "autocmd BufWritePost $MYVIMRC source $MYVIMRC " 让配置变更立即生效
 augroup END
 
-augroup setspace
-    au!
-    autocmd FileType yml setlocal expandtab shiftwidth=2 softtabstop=2
-augroup END
-
 " augroup cline " normal模式才显示cursorline
 "     au!
 "     au WinLeave,InsertEnter * set nocursorline
@@ -180,8 +149,8 @@ Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
 Plug 'junegunn/vim-easy-align'
 Plug 'vim-scripts/DoxygenToolkit.vim',{'for': ['cpp', 'c']}
-" Plug 'w0rp/ale'
-Plug 'vim-syntastic/syntastic',{'for': ['cpp', 'c', 'go']}
+Plug 'w0rp/ale',{'for': ['go']}
+Plug 'vim-syntastic/syntastic',{'for': ['cpp', 'c']}
 Plug 'Valloric/YouCompleteMe', {'do': './install.py --clang-completer --system-libclang'}
 Plug 'jiangmiao/auto-pairs'
 Plug 'luochen1990/rainbow'
@@ -199,14 +168,11 @@ Plug 'shougo/unite-outline'
 Plug 'shougo/neomru.vim'
 Plug 'shougo/neoyank.vim'
 Plug 'vim-scripts/vim-unite-cscope',{'for': ['cpp', 'c']}
-Plug 'terryma/vim-smooth-scroll'
 Plug 'fatih/vim-go'
 Plug 'buoto/gotests-vim'
 Plug 'Chiel92/vim-autoformat'
 Plug 'dyng/ctrlsf.vim'
-if executable('ctags')
-    Plug 'majutsushi/tagbar'
-endif
+Plug 'majutsushi/tagbar'
 
 " 插件列表结束
 call plug#end()
@@ -340,7 +306,9 @@ function! LoadAle()
     let g:ale_lint_on_text_changed='never'
     let g:ale_linters = {'go':['gometalinter','gofmt']}
 endfunction
-" execute LoadAle()
+if filereadable(expand("~/.vim/bundle/ale/plugin/ale.vim"))
+    execute LoadAle()
+endif
 
 function! LoadSyntastic()
     set statusline+=%#warningmsg#
@@ -354,8 +322,8 @@ function! LoadSyntastic()
     let g:syntastic_c_checkers = ['clang_check']
     let g:syntastic_clang_check_config_file = '.clang'
 
-    let g:syntastic_go_checkers = ['golint', 'govec', 'gometalinter']
-    let g:syntastic_go_gometalinter_args = ['--disable-all', '--enable=errcheck']
+    " let g:syntastic_go_checkers = ['golint', 'govec', 'gometalinter']
+    " let g:syntastic_go_gometalinter_args = ['--disable-all', '--enable=errcheck']
 endfunction
 if filereadable(expand("~/.vim/bundle/syntastic/plugin/syntastic.vim"))
     execute LoadSyntastic()
@@ -737,12 +705,17 @@ cmap cwd lcd %:p:h
 cmap cd. lcd %:p:h
 
 " 设置快捷键遍历子窗口
-nnoremap <C-W> <C-W>W
-nnoremap <Tab> <C-W>w<C-W>_
-nnoremap <C-J> <C-W>j<C-W>_
-nnoremap <C-K> <C-W>k<C-W>_
-nnoremap <C-L> <C-W>l<C-W>_
-nnoremap <C-H> <C-W>h<C-W>_
+" 依次遍历
+nnoremap <C-w> <C-w>w
+nnoremap <tab> <C-w>w
+" 跳转至右方的窗口
+nnoremap <C-l> <C-w>l
+" 跳转至方的窗口
+nnoremap <C-h> <C-w>h
+" 跳转至上方的子窗口
+nnoremap <C-k> <C-w>k
+" 跳转至下方的子窗口
+nnoremap <C-j> <C-w>j
 
 " 库信息参考
 source $VIMRUNTIME/ftplugin/man.vim
