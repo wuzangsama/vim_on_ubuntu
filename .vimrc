@@ -200,7 +200,7 @@ Plug 'shougo/neomru.vim'
 Plug 'shougo/neoyank.vim'
 Plug 'vim-scripts/vim-unite-cscope',{'for': ['cpp', 'c']}
 Plug 'terryma/vim-smooth-scroll'
-Plug 'wuzangsama/vim-go', {'do': ':GoInstallBinaries'}
+Plug 'fatih/vim-go'
 Plug 'buoto/gotests-vim'
 Plug 'Chiel92/vim-autoformat'
 Plug 'dyng/ctrlsf.vim'
