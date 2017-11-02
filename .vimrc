@@ -469,7 +469,7 @@ endfunction
 
 function! LoadUnite()
     nnoremap <Space><Space> :Unite<cr>
-    nnoremap <Space>f :Unite file/async<cr>
+    nnoremap <Space>f :Unite file_rec/async<cr>
     nnoremap <Space>b :Unite buffer<cr>
     nnoremap <Space>r :Unite file_mru<cr>
     nnoremap <Space>o :Unite outline<cr>
