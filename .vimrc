@@ -239,6 +239,7 @@ function! LoadAirline()
     let g:airline_right_alt_sep = '❮'
     let g:airline_symbols.linenr = '¶'
     let g:airline_symbols.branch = '⭠'
+    let g:airline_symbols.whitespace = 'Ξ'
 endfunction
 
 function! LoadColorSchemeSolarized()
