@@ -133,46 +133,61 @@ else
     call plug#begin('~/.vim/bundle')
 endif
 
+" 属性增强
 Plug 'MarcWeber/vim-addon-mw-utils'
+
+" 外观
 Plug 'tomasr/molokai'
 Plug 'altercation/vim-colors-solarized'
 Plug 'morhetz/gruvbox'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-Plug 'octol/vim-cpp-enhanced-highlight',{'for': 'cpp'}
+Plug 'luochen1990/rainbow'
+
+" 一般功能
 Plug 'Yggdroot/indentLine'
 Plug 'easymotion/vim-easymotion'
 Plug 'vim-scripts/matchit.zip'
-Plug 'derekwyatt/vim-fswitch',{'for': 'cpp'}
-Plug 'derekwyatt/vim-protodef',{'for': 'cpp'}
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
-Plug 'junegunn/vim-easy-align'
-Plug 'vim-scripts/DoxygenToolkit.vim',{'for': ['cpp', 'c']}
-Plug 'w0rp/ale',{'for': ['go']}
-Plug 'vim-syntastic/syntastic',{'for': ['cpp', 'c']}
-Plug 'Valloric/YouCompleteMe', {'do': './install.py --clang-completer --system-libclang'}
-Plug 'jiangmiao/auto-pairs'
-Plug 'luochen1990/rainbow'
-Plug 'tomtom/tcomment_vim' " 注释 gcc gcu gcap
-Plug 'SirVer/ultisnips'
 Plug 'terryma/vim-multiple-cursors'
 Plug 'terryma/vim-expand-region' " + 选中片段 - 不选中
 Plug 'nvie/vim-togglemouse'
+Plug 'Shougo/vinarise.vim'
 Plug 'shougo/vimshell.vim'
 Plug 'Shougo/vimproc.vim', {'do': 'make'}
-Plug 'Shougo/vinarise.vim'
 Plug 'shougo/vimfiler.vim'
 Plug 'Shougo/unite.vim'
 Plug 'shougo/unite-outline'
 Plug 'shougo/neomru.vim'
 Plug 'shougo/neoyank.vim'
-Plug 'vim-scripts/vim-unite-cscope',{'for': ['cpp', 'c']}
-Plug 'fatih/vim-go'
-Plug 'buoto/gotests-vim'
-Plug 'Chiel92/vim-autoformat'
 Plug 'dyng/ctrlsf.vim'
 Plug 'majutsushi/tagbar'
+
+" 所有语言
+Plug 'junegunn/vim-easy-align'
+Plug 'tomtom/tcomment_vim' " 注释 gcc gcu gcap
+
+" CPP
+Plug 'octol/vim-cpp-enhanced-highlight',{'for': 'cpp'}
+Plug 'derekwyatt/vim-fswitch',{'for': 'cpp'}
+Plug 'derekwyatt/vim-protodef',{'for': 'cpp'}
+Plug 'vim-scripts/DoxygenToolkit.vim',{'for': ['cpp', 'c']}
+Plug 'vim-scripts/vim-unite-cscope',{'for': ['cpp', 'c']}
+
+" GoLang
+Plug 'fatih/vim-go'
+Plug 'buoto/gotests-vim'
+
+" 语法检测
+Plug 'w0rp/ale',{'for': ['go']}
+Plug 'vim-syntastic/syntastic',{'for': ['cpp', 'c']}
+
+" 自动补全
+Plug 'Valloric/YouCompleteMe', {'do': './install.py --clang-completer --system-libclang'}
+Plug 'jiangmiao/auto-pairs'
+Plug 'SirVer/ultisnips'
+
 
 " 插件列表结束
 call plug#end()
