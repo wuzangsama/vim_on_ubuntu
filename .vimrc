@@ -25,6 +25,11 @@ set guioptions-=m
 set guioptions-=T
 
 set laststatus=2 " 总是显示状态栏
+set statusline=%<%f\                     " Filename
+set statusline+=%w%h%m%r                 " Options
+set statusline+=%{fugitive#statusline()} " Git Hotness
+set statusline+=\ [%{&ff}/%Y]            " Filetype
+set statusline+=\ [%{getcwd()}]          " Current dir
 set ruler " 显示光标当前位置
 
 " 滚动保留行数
@@ -163,6 +168,8 @@ Plug 'shougo/neomru.vim'
 Plug 'shougo/neoyank.vim'
 Plug 'dyng/ctrlsf.vim'
 Plug 'majutsushi/tagbar'
+Plug 'tpope/vim-fugitive'
+Plug 'junegunn/gv.vim'
 
 " 所有语言
 Plug 'junegunn/vim-easy-align'
