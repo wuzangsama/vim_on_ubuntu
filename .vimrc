@@ -164,6 +164,7 @@ else
     call plug#begin('~/.vim/bundle')
 endif
 
+Plug 'MarcWeber/vim-addon-mw-utils'
 Plug 'tomasr/molokai'
 Plug 'altercation/vim-colors-solarized'
 Plug 'morhetz/gruvbox'
@@ -689,6 +690,7 @@ function! LoadCtrlSF()
     let g:ctrlsf_ackprg = 'ag'
     let g:ctrlsf_auto_close = 0
     let g:ctrlsf_case_sensitive = 'no'
+    let g:ctrlsf_ignore_dir = ['.git', '.svn']
 endfunction
 if filereadable(expand("~/.vim/bundle/ctrlsf.vim/plugin/ctrlsf.vim"))
     execute LoadCtrlSF()
