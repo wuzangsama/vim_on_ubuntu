@@ -25,6 +25,19 @@ set guioptions-=m
 set guioptions-=T
 
 set laststatus=2 " 总是显示状态栏
+function! s:statusline_expr()
+    let mod = "%{&modified ? '[+] ' : !&modifiable ? '[x] ' : ''}"
+    let ro  = "%{&readonly ? '[RO] ' : ''}"
+    let ft  = "%{len(&filetype) ? '['.&filetype.'] ' : ''}"
+    let fug = "%{exists('g:loaded_fugitive') ? fugitive#statusline() : ''}"
+    let sep = ' %= '
+    let pos = ' %-12(%l : %c%V%) '
+    let pct = ' %P '
+
+    return '[%n] %w%h%m%r %F %<'.mod.ro.ft.fug.sep.pos.'%*'.pct
+endfunction
+let &statusline = s:statusline_expr()
+
 set ruler " 显示光标当前位置
 
 " 滚动保留行数
@@ -271,38 +284,24 @@ function! LoadColorSchemeSeoul256()
 endfunction
 
 if has('gui')
-    if filereadable(expand("~/.vim/bundle/vim-colors-solarized/colors/solarized.vim"))
+    if filereadable(expand("~/.vim/bundle/seoul256.vim/colors/seoul256.vim"))
         execute LoadColorSchemeSeoul256()
     endif
 else
-    if filereadable(expand("~/.vim/bundle/gruvbox/colors/gruvbox.vim"))
+    if filereadable(expand("~/.vim/bundle/seoul256.vim/colors/seoul256.vim"))
         execute LoadColorSchemeSeoul256()
     endif
 endif
 
 function! LoadEmoji()
-    set completefunc=emoji#complete
     let g:gitgutter_sign_added = emoji#for('small_blue_diamond')
     let g:gitgutter_sign_modified = emoji#for('small_orange_diamond')
     let g:gitgutter_sign_removed = emoji#for('small_red_triangle')
     let g:gitgutter_sign_modified_removed = emoji#for('collision')
-
-    function! s:statusline_expr()
-        let mod = "%{&modified ? '[+] ' : !&modifiable ? '[x] ' : ''}"
-        let ro  = "%{&readonly ? '[RO] ' : ''}"
-        let ft  = "%{len(&filetype) ? '['.&filetype.'] ' : ''}"
-        let fug = "%{exists('g:loaded_fugitive') ? fugitive#statusline() : ''}"
-        let sep = ' %= '
-        let pos = ' %-12(%l : %c%V%) '
-        let pct = ' %P '
-
-        return emoji#for('star').'[%n] %w%h%m%r %F %<'.mod.ro.ft.fug.sep.pos.'%*'.pct.emoji#for('clock3')
-    endfunction
-    let &statusline = s:statusline_expr()
 endfunction
-if filereadable(expand("~/.vim/bundle/vim-emoji/README.md"))
-    execute LoadEmoji()
-endif
+" if filereadable(expand("~/.vim/bundle/vim-emoji/README.md"))
+"     execute LoadEmoji()
+" endif
 
 function! LoadGoyo()
     autocmd! User GoyoEnter Limelight
@@ -871,6 +870,7 @@ function! StripTrailingWhitespace()
 endfunction
 " Remove trailing whitespaces and ^M chars
 autocmd FileType c,cpp,java,php,javascript,python,rust,xml,yml,perl,sql autocmd BufWritePre <buffer> call StripTrailingWhitespace()
+nnoremap <silent> <F10> :call StripTrailingWhitespace()<CR>
 
 " 搜索选中项 {
 function! VisualSelection() range
@@ -885,8 +885,20 @@ function! VisualSelection() range
     let @/ = l:pattern
     let @" = l:saved_reg
 endfunction
+function! NormalSelection() range
+    let l:saved_reg = @"
+    execute "normal! viwy"
+
+    let l:pattern = escape(@", '\\/.*$^~[]')
+    let l:pattern = substitute(l:pattern, "\n$", "", "")
+
+    execute 'CtrlSF '.l:pattern
+
+    let @/ = l:pattern
+    let @" = l:saved_reg
+endfunction
 vnoremap <Space>g :call VisualSelection()<CR>
-nnoremap <Space>g :CtrlSF 
+nnoremap <Space>g :call NormalSelection()<CR>
 
 " 将外部命令 wmctrl 控制窗口最大化的命令行参数封装成一个 vim 的函数
 " fun! ToggleFullscreen()
