@@ -25,11 +25,6 @@ set guioptions-=m
 set guioptions-=T
 
 set laststatus=2 " 总是显示状态栏
-set statusline=%<%f\                     " Filename
-set statusline+=%w%h%m%r                 " Options
-set statusline+=%{fugitive#statusline()} " Git Hotness
-set statusline+=\ [%{&ff}/%Y]            " Filetype
-set statusline+=\ [%{getcwd()}]          " Current dir
 set ruler " 显示光标当前位置
 
 " 滚动保留行数
@@ -145,9 +140,11 @@ Plug 'MarcWeber/vim-addon-mw-utils'
 Plug 'tomasr/molokai'
 Plug 'altercation/vim-colors-solarized'
 Plug 'morhetz/gruvbox'
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
+Plug 'junegunn/seoul256.vim'
+" Plug 'vim-airline/vim-airline'
+" Plug 'vim-airline/vim-airline-themes'
 Plug 'luochen1990/rainbow'
+Plug 'junegunn/vim-emoji'
 
 " 一般功能
 Plug 'Yggdroot/indentLine'
@@ -169,7 +166,12 @@ Plug 'shougo/neoyank.vim'
 Plug 'dyng/ctrlsf.vim'
 Plug 'majutsushi/tagbar'
 Plug 'tpope/vim-fugitive'
+Plug 'airblade/vim-gitgutter'
 Plug 'junegunn/gv.vim'
+
+" 写作
+Plug 'junegunn/goyo.vim'
+Plug 'junegunn/limelight.vim'
 
 " 所有语言
 Plug 'junegunn/vim-easy-align'
@@ -238,8 +240,8 @@ function! LoadColorSchemeSolarized()
     let g:solarized_visibility="normal"
     let g:solarized_termcolors=256"
 
-    let g:airline_theme="solarized"
-    call LoadAirline()
+    " let g:airline_theme="solarized"
+    " call LoadAirline()
 endfunction
 
 function! LoadColorSchemeMolokai()
@@ -248,24 +250,67 @@ function! LoadColorSchemeMolokai()
     let g:molokai_original = 1
     let g:rehash256 = 1
 
-    let g:airline_theme="molokai"
-    call LoadAirline()
+    " let g:airline_theme="molokai"
+    " call LoadAirline()
 endfunction
 
 function! LoadColorSchemeGruvbox()
     set background=dark
     colorscheme gruvbox
 
-    let g:airline_theme="gruvbox"
-    call LoadAirline()
+    " let g:airline_theme="gruvbox"
+    " call LoadAirline()
 endfunction
+
+function! LoadColorSchemeSeoul256()
+    let g:indentLine_color_term = 239
+    let g:indentLine_color_gui = '#616161'
+
+    set background=dark
+    colorscheme seoul256
+endfunction
+
 if has('gui')
     if filereadable(expand("~/.vim/bundle/vim-colors-solarized/colors/solarized.vim"))
-        execute LoadColorSchemeSolarized()
+        execute LoadColorSchemeSeoul256()
     endif
 else
     if filereadable(expand("~/.vim/bundle/gruvbox/colors/gruvbox.vim"))
-        execute LoadColorSchemeGruvbox()
+        execute LoadColorSchemeSeoul256()
+    endif
+endif
+
+function! LoadEmoji()
+    set completefunc=emoji#complete
+    let g:gitgutter_sign_added = emoji#for('small_blue_diamond')
+    let g:gitgutter_sign_modified = emoji#for('small_orange_diamond')
+    let g:gitgutter_sign_removed = emoji#for('small_red_triangle')
+    let g:gitgutter_sign_modified_removed = emoji#for('collision')
+
+    function! s:statusline_expr()
+        let mod = "%{&modified ? '[+] ' : !&modifiable ? '[x] ' : ''}"
+        let ro  = "%{&readonly ? '[RO] ' : ''}"
+        let ft  = "%{len(&filetype) ? '['.&filetype.'] ' : ''}"
+        let fug = "%{exists('g:loaded_fugitive') ? fugitive#statusline() : ''}"
+        let sep = ' %= '
+        let pos = ' %-12(%l : %c%V%) '
+        let pct = ' %P '
+
+        return emoji#for('star').'[%n] %w%h%m%r %F %<'.mod.ro.ft.fug.sep.pos.'%*'.pct.emoji#for('clock3')
+    endfunction
+    let &statusline = s:statusline_expr()
+endfunction
+if filereadable(expand("~/.vim/bundle/vim-emoji/README.md"))
+    execute LoadEmoji()
+endif
+
+function! LoadGoyo()
+    autocmd! User GoyoEnter Limelight
+    autocmd! User GoyoLeave Limelight!
+endfunction
+if filereadable(expand("~/.vim/bundle/goyo.vim/plugin/goyo.vim"))
+    if filereadable(expand("~/.vim/bundle/limelight.vim/plugin/limelight.vim"))
+        exec LoadGoyo()
     endif
 endif
 
@@ -333,9 +378,6 @@ if filereadable(expand("~/.vim/bundle/ale/plugin/ale.vim"))
 endif
 
 function! LoadSyntastic()
-    set statusline+=%#warningmsg#
-    set statusline+=%{SyntasticStatuslineFlag()}
-    set statusline+=%*
     let g:syntastic_always_populate_loc_list = 1
     let g:syntastic_auto_loc_list = 1
     let g:syntastic_check_on_open = 1
