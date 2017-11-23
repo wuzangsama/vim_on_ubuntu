@@ -91,7 +91,6 @@ set softtabstop=4 " 让 vim 把连续数量的空格视为一个制表符
 " 基于缩进或语法进行代码折叠
 " set foldmethod=indent
 " set foldlevel=2
-" set foldmethod=syntax
 set nofoldenable " 启动 vim 时关闭折叠代码
 set formatoptions+=m " 如遇Unicode值大于255的文本，不必等到空格再折行
 set formatoptions+=B " 合并两行中文时，不在中间加空格
@@ -116,12 +115,10 @@ augroup position
     "autocmd BufWritePost $MYVIMRC source $MYVIMRC " 让配置变更立即生效
 augroup END
 
-" augroup cline " normal模式才显示cursorline
-"     au!
-"     au WinLeave,InsertEnter * set nocursorline
-"     au WinEnter,InsertLeave * set cursorline
-" augroup END
-
+augroup yml_group
+    au!
+    autocmd FileType haskell,puppet,ruby,yaml setlocal expandtab shiftwidth=2 softtabstop=2
+augroup END
 
 if has('nvim')
     let $NVIM_TUI_ENABLE_TRUE_COLOR=1
@@ -154,8 +151,6 @@ Plug 'tomasr/molokai'
 Plug 'altercation/vim-colors-solarized'
 Plug 'morhetz/gruvbox'
 Plug 'junegunn/seoul256.vim'
-" Plug 'vim-airline/vim-airline'
-" Plug 'vim-airline/vim-airline-themes'
 Plug 'luochen1990/rainbow'
 Plug 'junegunn/vim-emoji'
 
@@ -185,6 +180,8 @@ Plug 'junegunn/gv.vim'
 " 写作
 Plug 'junegunn/goyo.vim'
 Plug 'junegunn/limelight.vim'
+Plug 'iamcco/mathjax-support-for-mkdp'
+Plug 'iamcco/markdown-preview.vim'
 
 " 所有语言
 Plug 'junegunn/vim-easy-align'
@@ -226,25 +223,6 @@ call plug#end()
 " 配色方案
 set t_Co=256
 
-function! LoadAirline()
-    " 这个是安装字体后 必须设置此项
-    let g:airline_powerline_fonts = 1
-    " 显示buffer栏和buffer编号
-    let g:airline#extensions#tabline#enabled = 1
-    let g:airline#extensions#tabline#buffer_nr_show = 1
-
-    if !exists('g:airline_symbols')
-        let g:airline_symbols = {}
-    endif
-    let g:airline_left_sep = '▶'
-    let g:airline_left_alt_sep = '❯'
-    let g:airline_right_sep = '◀'
-    let g:airline_right_alt_sep = '❮'
-    let g:airline_symbols.linenr = '¶'
-    let g:airline_symbols.branch = '⭠'
-    let g:airline_symbols.whitespace = 'Ξ'
-endfunction
-
 function! LoadColorSchemeSolarized()
     set background=dark
     colorscheme solarized
@@ -252,9 +230,6 @@ function! LoadColorSchemeSolarized()
     let g:solarized_contrast="normal"
     let g:solarized_visibility="normal"
     let g:solarized_termcolors=256"
-
-    " let g:airline_theme="solarized"
-    " call LoadAirline()
 endfunction
 
 function! LoadColorSchemeMolokai()
@@ -262,17 +237,11 @@ function! LoadColorSchemeMolokai()
     colorscheme molokai
     let g:molokai_original = 1
     let g:rehash256 = 1
-
-    " let g:airline_theme="molokai"
-    " call LoadAirline()
 endfunction
 
 function! LoadColorSchemeGruvbox()
     set background=dark
     colorscheme gruvbox
-
-    " let g:airline_theme="gruvbox"
-    " call LoadAirline()
 endfunction
 
 function! LoadColorSchemeSeoul256()
@@ -728,6 +697,13 @@ if filereadable(expand("~/.vim/bundle/ctrlsf.vim/plugin/ctrlsf.vim"))
     execute LoadCtrlSF()
 endif
 
+function! LoadMarkdown()
+    let g:mkdp_path_to_chrome = "/Applications/Google\\ Chrome.app/Contents/MacOS/Google\\ Chrome"
+endfunction
+if filereadable(expand("~/.vim/bundle/markdown-preview.vim/plugin/mkdp.vim"))
+    execute LoadMarkdown()
+endif
+
 "=========================================
 " <<插件配置
 "=========================================
@@ -869,7 +845,7 @@ function! StripTrailingWhitespace()
     call cursor(l, c)
 endfunction
 " Remove trailing whitespaces and ^M chars
-autocmd FileType c,cpp,java,php,javascript,python,rust,xml,yml,perl,sql autocmd BufWritePre <buffer> call StripTrailingWhitespace()
+autocmd FileType c,cpp,java,php,javascript,python,rust,xml,yaml,perl,sql autocmd BufWritePre <buffer> call StripTrailingWhitespace()
 nnoremap <silent> <F10> :call StripTrailingWhitespace()<CR>
 
 " 搜索选中项 {
@@ -885,20 +861,21 @@ function! VisualSelection() range
     let @/ = l:pattern
     let @" = l:saved_reg
 endfunction
-function! NormalSelection() range
-    let l:saved_reg = @"
-    execute "normal! viwy"
-
-    let l:pattern = escape(@", '\\/.*$^~[]')
-    let l:pattern = substitute(l:pattern, "\n$", "", "")
-
-    execute 'CtrlSF '.l:pattern
-
-    let @/ = l:pattern
-    let @" = l:saved_reg
-endfunction
+" function! NormalSelection() range
+"     let l:saved_reg = @"
+"     execute "normal! viwy"
+"
+"     let l:pattern = escape(@", '\\/.*$^~[]')
+"     let l:pattern = substitute(l:pattern, "\n$", "", "")
+"
+"     execute 'CtrlSF '.l:pattern
+"
+"     let @/ = l:pattern
+"     let @" = l:saved_reg
+" endfunction
 vnoremap <Space>g :call VisualSelection()<CR>
-nnoremap <Space>g :call NormalSelection()<CR>
+" nnoremap <Space>g :call NormalSelection()<CR>
+nnoremap <Space>g :CtrlSF 
 
 " 将外部命令 wmctrl 控制窗口最大化的命令行参数封装成一个 vim 的函数
 " fun! ToggleFullscreen()
