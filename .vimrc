@@ -202,17 +202,18 @@ Plug 'w0rp/ale',{'for': ['go']}
 Plug 'vim-syntastic/syntastic',{'for': ['cpp', 'c']}
 
 " 自动补全
-" Plug 'Valloric/YouCompleteMe', {'do': './install.py --clang-completer --system-libclang'}
-if has('nvim')
-  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-else
-  Plug 'Shougo/deoplete.nvim'
-  Plug 'roxma/nvim-yarp'
-  Plug 'roxma/vim-hug-neovim-rpc'
-endif
-Plug 'Shougo/neco-syntax'
-Plug 'zchee/deoplete-go', { 'do': 'make'}
-Plug 'tweekmonster/deoplete-clang2'
+Plug 'Valloric/YouCompleteMe', {'do': './install.py --clang-completer --system-libclang'}
+" if has('nvim')
+"   Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+" else
+"   Plug 'Shougo/deoplete.nvim'
+"   Plug 'roxma/nvim-yarp'
+"   Plug 'roxma/vim-hug-neovim-rpc'
+" endif
+" Plug 'Shougo/neco-syntax'
+" Plug 'zchee/deoplete-go', { 'do': 'make'}
+" Plug 'tweekmonster/deoplete-clang2'
+" Plug 'ervandew/supertab'
 Plug 'jiangmiao/auto-pairs'
 Plug 'SirVer/ultisnips'
 
@@ -431,11 +432,11 @@ if filereadable(expand("~/.vim/bundle/YouCompleteMe/plugin/youcompleteme.vim"))
 endif
 
 function! LoadDeoplete()
-    set completeopt+=noselect
+    " set completeopt+=noselect
     set completeopt-=preview
+    let g:SuperTabDefaultCompletionType = "<c-n>"
     let g:deoplete#enable_at_startup = 1
-    inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
-    let g:deoplete#sources#clang#executable = '/usr/bin/clang'
+    let g:deoplete#sources#clang#executable = '/Users/zhanghaifeng/clang/bin/clang'
     let g:deoplete#sources#go#gocode_binary = $GOPATH.'/bin/gocode'
     let g:deoplete#sources#go#sort_class = ['package', 'func', 'type', 'var', 'const']
 endfunction
