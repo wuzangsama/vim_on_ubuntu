@@ -109,15 +109,16 @@ filetype indent on " 自适应不同语言的智能缩进
 
 set guifont=Source\ Code\ Pro\ for\ Powerline:h14 " 设置 gvim 显示字体
 
-augroup position
+augroup posreset
     au!
     au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif " 启动后定位到上次关闭光标位置
     "autocmd BufWritePost $MYVIMRC source $MYVIMRC " 让配置变更立即生效
 augroup END
 
-augroup yml_group
+augroup fileset
     au!
     autocmd FileType haskell,puppet,ruby,yaml setlocal expandtab shiftwidth=2 softtabstop=2
+    autocmd FileType markdown,text setlocal wrap
 augroup END
 
 if has('nvim')
@@ -160,8 +161,6 @@ Plug 'easymotion/vim-easymotion'
 Plug 'vim-scripts/matchit.zip'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
-Plug 'terryma/vim-multiple-cursors'
-Plug 'terryma/vim-expand-region' " + 选中片段 - 不选中
 Plug 'nvie/vim-togglemouse'
 Plug 'Shougo/vinarise.vim'
 Plug 'shougo/vimshell.vim'
@@ -203,7 +202,17 @@ Plug 'w0rp/ale',{'for': ['go']}
 Plug 'vim-syntastic/syntastic',{'for': ['cpp', 'c']}
 
 " 自动补全
-Plug 'Valloric/YouCompleteMe', {'do': './install.py --clang-completer --system-libclang'}
+" Plug 'Valloric/YouCompleteMe', {'do': './install.py --clang-completer --system-libclang'}
+if has('nvim')
+  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+else
+  Plug 'Shougo/deoplete.nvim'
+  Plug 'roxma/nvim-yarp'
+  Plug 'roxma/vim-hug-neovim-rpc'
+endif
+Plug 'Shougo/neco-syntax'
+Plug 'zchee/deoplete-go', { 'do': 'make'}
+Plug 'tweekmonster/deoplete-clang2'
 Plug 'jiangmiao/auto-pairs'
 Plug 'SirVer/ultisnips'
 
@@ -253,13 +262,9 @@ function! LoadColorSchemeSeoul256()
 endfunction
 
 if has('gui')
-    if filereadable(expand("~/.vim/bundle/seoul256.vim/colors/seoul256.vim"))
-        execute LoadColorSchemeSeoul256()
-    endif
+    execute LoadColorSchemeGruvbox()
 else
-    if filereadable(expand("~/.vim/bundle/seoul256.vim/colors/seoul256.vim"))
-        execute LoadColorSchemeSeoul256()
-    endif
+    execute LoadColorSchemeGruvbox()
 endif
 
 function! LoadEmoji()
@@ -278,6 +283,25 @@ function! LoadGoyo()
 endfunction
 if filereadable(expand("~/.vim/bundle/goyo.vim/plugin/goyo.vim"))
     if filereadable(expand("~/.vim/bundle/limelight.vim/plugin/limelight.vim"))
+        " Color name (:help cterm-colors) or ANSI code
+        let g:limelight_conceal_ctermfg = 'gray'
+        let g:limelight_conceal_ctermfg = 240
+        " Color name (:help gui-colors) or RGB color
+        let g:limelight_conceal_guifg = 'DarkGray'
+        let g:limelight_conceal_guifg = '#777777'
+        " Default: 0.5
+        let g:limelight_default_coefficient = 0.7
+        " Number of preceding/following paragraphs to include (default: 0)
+        let g:limelight_paragraph_span = 3
+        " Beginning/end of paragraph
+        "   When there's no empty line between the paragraphs
+        "   and each paragraph starts with indentation
+        let g:limelight_bop = '^\s'
+        let g:limelight_eop = '\ze\n^\s'
+        " Highlighting priority (default: 10)
+        "   Set it to -1 not to overrule hlsearch
+
+        let g:limelight_priority = -1
         exec LoadGoyo()
     endif
 endif
@@ -406,12 +430,17 @@ if filereadable(expand("~/.vim/bundle/YouCompleteMe/plugin/youcompleteme.vim"))
     execute LoadYcm()
 endif
 
-function! LoadMultipleCursors()
-    let g:multi_cursor_next_key='<Leader>n' " 选中
-    let g:multi_cursor_skip_key='<Leader>k' " 跳过
+function! LoadDeoplete()
+    set completeopt+=noselect
+    set completeopt-=preview
+    let g:deoplete#enable_at_startup = 1
+    inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+    let g:deoplete#sources#clang#executable = '/usr/bin/clang'
+    let g:deoplete#sources#go#gocode_binary = $GOPATH.'/bin/gocode'
+    let g:deoplete#sources#go#sort_class = ['package', 'func', 'type', 'var', 'const']
 endfunction
-if filereadable(expand("~/.vim/bundle/vim-multiple-cursors/plugin/multiple_cursors.vim"))
-    execute LoadMultipleCursors()
+if filereadable(expand("~/.vim/bundle/deoplete.nvim/plugin/deoplete.vim"))
+    exec LoadDeoplete()
 endif
 
 function! LoadRainbow()
@@ -442,20 +471,6 @@ endfunction
 if filereadable(expand("~/.vim/bundle/rainbow/plugin/rainbow.vim"))
     execute LoadRainbow()
 endif
-
-function! LoadCommandT()
-    let g:CommandTWildIgnore=&wildignore
-    let g:CommandTMaxHeight = 15
-    let g:CommandTMaxFiles = 500000
-    let g:CommandTInputDebounce = 200
-    let g:CommandTFileScanner = 'watchman'
-    let g:CommandTMaxCachedDirectories = 10
-
-    nnoremap <silent> <Space>f <Plug>(CommandT)
-    nnoremap <silent> <Space>t <Plug>(CommandTBuffer)
-    nnoremap <silent> <Space>j <Plug>(CommandTJump)
-endfunction
-" execute LoadCommandT()
 
 function! LoadFzf()
     " Default fzf layout
@@ -689,7 +704,7 @@ endif
 
 function! LoadCtrlSF()
     let g:ctrlsf_ackprg = 'ag'
-    let g:ctrlsf_auto_close = 0
+    let g:ctrlsf_auto_close = 1
     let g:ctrlsf_case_sensitive = 'no'
     let g:ctrlsf_ignore_dir = ['.git', '.svn']
 endfunction
