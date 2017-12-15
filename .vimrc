@@ -167,10 +167,9 @@ Plug 'shougo/vimshell.vim'
 Plug 'Shougo/vimproc.vim', {'do': 'make'}
 Plug 'shougo/vimfiler.vim'
 Plug 'Shougo/unite.vim'
-Plug 'shougo/unite-outline'
-Plug 'shougo/neomru.vim'
-Plug 'shougo/neoyank.vim'
-Plug 'dyng/ctrlsf.vim'
+" Plug 'dyng/ctrlsf.vim'
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf.vim'
 Plug 'majutsushi/tagbar'
 Plug 'tpope/vim-fugitive'
 Plug 'airblade/vim-gitgutter'
@@ -191,7 +190,6 @@ Plug 'octol/vim-cpp-enhanced-highlight',{'for': 'cpp'}
 Plug 'derekwyatt/vim-fswitch',{'for': 'cpp'}
 Plug 'derekwyatt/vim-protodef',{'for': 'cpp'}
 Plug 'vim-scripts/DoxygenToolkit.vim',{'for': ['cpp', 'c']}
-Plug 'vim-scripts/vim-unite-cscope',{'for': ['cpp', 'c']}
 
 " GoLang
 Plug 'fatih/vim-go'
@@ -507,24 +505,23 @@ function! LoadFzf()
 
     " [Tags] Command to generate tags file
     let g:fzf_tags_command = 'ctags -R'
-    nnoremap <Space>t :BTags<cr>
     nnoremap <Space>f :Files<cr>
+    nnoremap <Space>b :Buffers<cr>
     nnoremap <Space>m :Marks<cr>
+    nnoremap <Space>r :History<cr>
+    nnoremap <Space>c :Commits<cr>
+    nnoremap <Space>s :GFiles?<cr>
     nnoremap <Space>hs :History/<cr>
     nnoremap <Space>hc :History:<cr>
 endfunction
-" execute LoadFzf()
+if filereadable(expand("~/.vim/bundle/fzf.vim/plugin/fzf.vim"))
+    execute LoadFzf()
+endif
 
 function! LoadUnite()
-    nnoremap <Space><Space> :Unite<cr>
-    nnoremap <Space>f :Unite file_rec/async<cr>
-    nnoremap <Space>b :Unite buffer<cr>
-    nnoremap <Space>r :Unite file_mru<cr>
-    nnoremap <Space>o :Unite outline<cr>
-    nnoremap <Space>hy :Unite history/yank<cr>
-    nnoremap <Space>ci :Unite cscope/functions_calling<cr>
-    nnoremap <Space>cb :Unite cscope/functions_called_by<cr>
-    nnoremap <Space>cf :Unite cscope/find_this_symbol<cr>
+    " nnoremap <Space><Space> :Unite<cr>
+    " nnoremap <Space>f :Unite file_rec/async<cr>
+    " nnoremap <Space>b :Unite buffer<cr>
     call unite#custom#source('codesearch', 'max_candidates', 30)
     call unite#filters#matcher_default#use(['matcher_fuzzy'])
     call unite#filters#sorter_default#use(['sorter_rank'])
@@ -644,33 +641,33 @@ function! LoadVimGo()
         autocmd!
 
         " Show by default 4 spaces for a tab
-        autocmd BufNewFile,BufRead *.go setlocal noexpandtab tabstop=4 shiftwidth=4
+        " autocmd BufNewFile,BufRead *.go setlocal noexpandtab tabstop=4 shiftwidth=4
 
         " :GoBuild and :GoTestCompile
-        autocmd FileType go nmap <leader>b :<C-u>call <SID>build_go_files()<CR>
+        autocmd FileType go nmap <leader>gb :<C-u>call <SID>build_go_files()<CR>
 
         " :GoTest
-        autocmd FileType go nmap <leader>t  <Plug>(go-test)
+        autocmd FileType go nmap <leader>gt  <Plug>(go-test)
 
         " :GoRun
-        autocmd FileType go nmap <leader>r  <Plug>(go-run)
+        autocmd FileType go nmap <leader>gr  <Plug>(go-run)
 
         " :GoDoc
-        autocmd FileType go nmap <leader>d <Plug>(go-doc)
+        autocmd FileType go nmap <leader>gd <Plug>(go-doc)
 
         " :GoCoverageToggle
-        autocmd FileType go nmap <leader>c <Plug>(go-coverage-toggle)
+        autocmd FileType go nmap <leader>gc <Plug>(go-coverage-toggle)
 
         " :GoInfo
-        autocmd FileType go nmap <leader>i <Plug>(go-info)
+        autocmd FileType go nmap <leader>gi <Plug>(go-info)
 
         " :GoMetaLinter
-        autocmd FileType go nmap <leader>l <Plug>(go-metalinter)
+        autocmd FileType go nmap <leader>gl <Plug>(go-metalinter)
 
         " :GoDef but opens in a vertical split
-        autocmd FileType go nmap <leader>v <Plug>(go-def-vertical)
+        autocmd FileType go nmap <leader>gv <Plug>(go-def-vertical)
         " :GoDef but opens in a horizontal split
-        autocmd FileType go nmap <leader>s <Plug>(go-def-split)
+        autocmd FileType go nmap <leader>gs <Plug>(go-def-split)
 
         " :GoAlternate  commands :A, :AV, :AS and :AT
         autocmd Filetype go command! -bang A call go#alternate#Switch(<bang>0, 'edit')
@@ -872,7 +869,7 @@ function! VisualSelection() range
     let l:pattern = escape(@", '\\/.*$^~[]')
     let l:pattern = substitute(l:pattern, "\n$", "", "")
 
-    execute 'CtrlSF '.l:pattern
+    execute 'Ag '.l:pattern
 
     let @/ = l:pattern
     let @" = l:saved_reg
@@ -891,7 +888,7 @@ endfunction
 " endfunction
 vnoremap <Space>g :call VisualSelection()<CR>
 " nnoremap <Space>g :call NormalSelection()<CR>
-nnoremap <Space>g :CtrlSF 
+nnoremap <Space>g :Ag 
 
 " 将外部命令 wmctrl 控制窗口最大化的命令行参数封装成一个 vim 的函数
 " fun! ToggleFullscreen()
