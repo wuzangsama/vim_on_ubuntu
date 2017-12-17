@@ -25,18 +25,6 @@ set guioptions-=m
 set guioptions-=T
 
 set laststatus=2 " 总是显示状态栏
-function! s:statusline_expr()
-    let mod = "%{&modified ? '[+] ' : !&modifiable ? '[x] ' : ''}"
-    let ro  = "%{&readonly ? '[RO] ' : ''}"
-    let ft  = "%{len(&filetype) ? '['.&filetype.'] ' : ''}"
-    let fug = "%{exists('g:loaded_fugitive') ? fugitive#statusline() : ''}"
-    let sep = ' %= '
-    let pos = ' %-12(%l : %c%V%) '
-    let pct = ' %P '
-
-    return '[%n] %w%h%m%r %F %<'.mod.ro.ft.fug.sep.pos.'%*'.pct
-endfunction
-let &statusline = s:statusline_expr()
 
 set ruler " 显示光标当前位置
 
@@ -174,6 +162,9 @@ Plug 'majutsushi/tagbar'
 Plug 'tpope/vim-fugitive'
 Plug 'airblade/vim-gitgutter'
 Plug 'junegunn/gv.vim'
+Plug 'junegunn/vim-slash'
+Plug 'junegunn/vim-after-object'
+Plug 'junegunn/vim-peekaboo'
 
 " 写作
 Plug 'junegunn/goyo.vim'
@@ -261,20 +252,43 @@ function! LoadColorSchemeSeoul256()
 endfunction
 
 if has('gui')
-    execute LoadColorSchemeGruvbox()
+    execute LoadColorSchemeSeoul256()
 else
-    execute LoadColorSchemeGruvbox()
+    execute LoadColorSchemeSeoul256()
 endif
+
+function! s:statusline_expr()
+    let mod = "%{&modified ? '[+] ' : !&modifiable ? '[x] ' : ''}"
+    let ro  = "%{&readonly ? '[RO] ' : ''}"
+    let ft  = "%{len(&filetype) ? '['.&filetype.'] ' : ''}"
+    let fug = "%{exists('g:loaded_fugitive') ? fugitive#statusline() : ''}"
+    let sep = ' %= '
+    let pos = ' %-12(%l : %c%V%) '
+    let pct = ' %P '
+
+    return '[%n] %w%h%m%r %F %<'.mod.ro.ft.fug.sep.pos.'%*'.pct
+endfunction
 
 function! LoadEmoji()
     let g:gitgutter_sign_added = emoji#for('small_blue_diamond')
     let g:gitgutter_sign_modified = emoji#for('small_orange_diamond')
     let g:gitgutter_sign_removed = emoji#for('small_red_triangle')
     let g:gitgutter_sign_modified_removed = emoji#for('collision')
+
+    let &statusline = s:statusline_expr().emoji#for('clock3')
 endfunction
-" if filereadable(expand("~/.vim/bundle/vim-emoji/README.md"))
-"     execute LoadEmoji()
-" endif
+if filereadable(expand("~/.vim/bundle/vim-emoji/README.md"))
+    execute LoadEmoji()
+else
+    let &statusline = s:statusline_expr()
+endif
+
+function! LoadAfter()
+    autocmd VimEnter * call after_object#enable('=', ':', '-', '#', ' ')
+endfunction
+if filereadable(expand("~/.vim/bundle/vim-after-object/README.md"))
+    execute LoadAfter()
+endif
 
 function! LoadGoyo()
     autocmd! User GoyoEnter Limelight
