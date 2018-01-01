@@ -5,9 +5,8 @@
 " @date 2017-07-29
 
 " 基础 {{{
-
 if &compatible | set nocompatible | endif
-let mapleader=';'
+let mapleader=' '
 let maplocalleader=';'
 
 " 编码
@@ -17,8 +16,8 @@ set fileencodings=ucs-bom,utf-8,cp936,gb18030,big5,euc-jp,euc-kr,latin1
 
 " 界面相关
 silent! set number relativenumber background=dark nowrap guioptions-=lLrRmT
-silent! set ruler laststatus=2 statusline=%t\ %=\ %m%r%y%w\ %3l:%-2c
-silent! set cursorline list listchars=tab:›\ ,trail:• scrolloff=3
+silent! set ruler laststatus=2 noshowmode cursorline colorcolumn=80
+silent! set list listchars=tab:›\ ,trail:• scrolloff=3
 silent! set mouse=a mousehide guicursor=a:block-blinkon0 helplang=cn
 if has('gui_running') | set guifont=Source\ Code\ Pro\ for\ Powerline:h14 | else | set t_Co=256 | endif
 
@@ -27,13 +26,6 @@ silent! set shiftwidth=4 expandtab tabstop=4 softtabstop=4
 silent! set nofoldenable foldlevel=2 foldmethod=indent
 silent! set backspace=indent,eol,start formatoptions=cmMj
 silent! set tags=tags,./tags,../tags,../../tags,../../../tags
-if has("cscope")
-    set csprg=/usr/bin/cscope csto=1 cst nocsverb
-    if filereadable("cscope.out")
-        cs add cscope.out                   "添加cscope数据库
-    endif
-    set csverb                             "显示添加成功与否
-endif
 
 " 剪切板
 silent! set clipboard=unnamed
@@ -66,9 +58,20 @@ filetype indent on
 " 生成tags
 function! GeneratorTags()
     exec "!ctags -R --sort=1 --c++-kinds=+p --fields=+iaS --extra=+q --language-force=C++ ."
-    exec "!find . -name \"*.c\" -o -name \"*.cpp\" -o -name \"*.h\" -o -name \"*.hpp\" > cscope.files"
-    exec "!cscope -q -R -b -i cscope.files"
 endfunc
+
+function! StatuslineExpr()
+  let mod = "%{&modified ? '[+] ' : !&modifiable ? '[x] ' : ''}"
+  let ro  = "%{&readonly ? '[RO] ' : ''}"
+  let ft  = "%{len(&filetype) ? '['.&filetype.'] ' : ''}"
+  let fug = "%{exists('g:loaded_fugitive') ? fugitive#statusline() : ''}"
+  let sep = ' %= '
+  let pos = ' %-12(%l : %c%V%) '
+  let pct = ' %P'
+
+  return '[%n] %F %<'.mod.ro.ft.fug.sep.pos.'%*'.pct
+endfunction
+" let &statusline = StatuslineExpr()
 
 " 替换函数。参数说明：
 " confirm：是否替换前逐一确认
@@ -121,7 +124,7 @@ endfunction
 
 " 窗口最大化
 function! ToggleFullscreen()
-	call system("wmctrl -ir " . v:windowid . " -b toggle,fullscreen")
+    call system("wmctrl -ir " . v:windowid . " -b toggle,fullscreen")
 endfunction
 " }}}
 
@@ -151,6 +154,13 @@ call plug#begin('~/.vim/bundle')
 Plug 'MarcWeber/vim-addon-mw-utils'
 
 " 外观
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+function! LoadAirline(theme)
+    let g:airline_theme=a:theme
+    let g:airline_symbols_ascii = 1
+    let g:airline_detect_spell=0
+endfunction
 Plug 'tomasr/molokai'
 function! LoadColorSchemeMolokai()
     colorscheme molokai
@@ -216,7 +226,6 @@ Plug 'easymotion/vim-easymotion'
 Plug 'vim-scripts/matchit.zip'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
-Plug 'nvie/vim-togglemouse' " F12
 Plug 'Shougo/vinarise.vim'
 Plug 'shougo/vimshell.vim'
 Plug 'Shougo/vimproc.vim', {'do': 'make'}
@@ -342,15 +351,15 @@ function! LoadFzf()
 
     " [Tags] Command to generate tags file
     let g:fzf_tags_command = 'ctags -R'
-    nnoremap <Space>f :Files<cr>
-    nnoremap <Space>b :Buffers<cr>
-    nnoremap <Space>m :Marks<cr>
-    nnoremap <Space>r :History<cr>
-    nnoremap <Space>c :Commits<cr>
-    nnoremap <Space>s :GFiles?<cr>
-    nnoremap <Space>hs :History/<cr>
-    nnoremap <Space>hc :History:<cr>
-    nnoremap <Space>t :BTags<cr>
+    nnoremap <Leader>ff :Files<cr>
+    nnoremap <Leader>fb :Buffers<cr>
+    nnoremap <Leader>fm :Marks<cr>
+    nnoremap <Leader>fr :History<cr>
+    nnoremap <Leader>fc :Commits<cr>
+    nnoremap <Leader>fs :GFiles?<cr>
+    nnoremap <Leader>fhs :History/<cr>
+    nnoremap <Leader>fhc :History:<cr>
+    nnoremap <Leader>ft :BTags<cr>
 endfunction
 Plug 'tpope/vim-fugitive'
 Plug 'airblade/vim-gitgutter'
@@ -396,12 +405,17 @@ function! LoadEasyAlign()
     nmap ga <Plug>(EasyAlign)
 endfunction
 Plug 'tomtom/tcomment_vim' " 注释 gcc gcu gcap
+Plug 'Shougo/echodoc.vim'
 
 " CPP
 Plug 'octol/vim-cpp-enhanced-highlight',{'for': 'cpp'}
+Plug 'lyuts/vim-rtags', { 'for': ['c', 'cpp'] }
 Plug 'derekwyatt/vim-fswitch',{'for': 'cpp'}
 function! LoadFswitch()
-    nnoremap <silent> <leader>a :FSHere<cr>
+    augroup cppswitch
+        autocmd!
+        autocmd FileType c,cpp nnoremap <silent> <localleader>a :FSHere<cr>
+    augroup END
 endfunction
 Plug 'derekwyatt/vim-protodef',{'for': 'cpp'}
 function! LoadProtodef()
@@ -414,8 +428,12 @@ Plug 'vim-scripts/DoxygenToolkit.vim',{'for': ['cpp', 'c']}
 function! LoadDoxygen()
     let g:DoxygenToolkit_authorName="zhanghf@zailingtech.com"
     let g:DoxygenToolkit_versionString="1.0"
-    nnoremap <leader>da <ESC>gg:DoxAuthor<CR>
-    nnoremap <leader>df <ESC>:Dox<CR>
+
+    augroup cppswitch
+        autocmd!
+        autocmd FileType c,cpp nnoremap <localleader>da <ESC>gg:DoxAuthor<CR>
+        autocmd FileType c,cpp nnoremap <localleader>df <ESC>:Dox<CR>
+    augroup END
 endfunction
 
 " GoLang
@@ -433,37 +451,37 @@ function! LoadVimGo()
     let g:go_highlight_generate_tags = 1
 
     " Open :GoDeclsDir with ctrl-g
-    nmap <C-g> :GoDeclsDir<cr>
-    imap <C-g> <esc>:<C-u>GoDeclsDir<cr>
+    nnoremap <C-g> :GoDeclsDir<cr>
+    inoremap <C-g> <esc>:<C-u>GoDeclsDir<cr>
 
     augroup go
         autocmd!
 
         " :GoBuild and :GoTestCompile
-        autocmd FileType go nmap <leader>gb :<C-u>call <SID>build_go_files()<CR>
+        autocmd FileType go nnoremap <localleader>b :<C-u>call <SID>build_go_files()<CR>
 
         " :GoTest
-        autocmd FileType go nmap <leader>gt  <Plug>(go-test)
+        autocmd FileType go nnoremap <localleader>t  <Plug>(go-test)
 
         " :GoRun
-        autocmd FileType go nmap <leader>gr  <Plug>(go-run)
+        autocmd FileType go nnoremap <localleader>r  <Plug>(go-run)
 
         " :GoDoc
-        autocmd FileType go nmap <leader>gd <Plug>(go-doc)
+        autocmd FileType go nnoremap <localleader>d <Plug>(go-doc)
 
         " :GoCoverageToggle
-        autocmd FileType go nmap <leader>gc <Plug>(go-coverage-toggle)
+        autocmd FileType go nnoremap <localleader>c <Plug>(go-coverage-toggle)
 
         " :GoInfo
-        autocmd FileType go nmap <leader>gi <Plug>(go-info)
+        autocmd FileType go nnoremap <localleader>i <Plug>(go-info)
 
         " :GoMetaLinter
-        autocmd FileType go nmap <leader>gl <Plug>(go-metalinter)
+        autocmd FileType go nnoremap <localleader>l <Plug>(go-metalinter)
 
         " :GoDef but opens in a vertical split
-        autocmd FileType go nmap <leader>gv <Plug>(go-def-vertical)
+        autocmd FileType go nnoremap <localleader>v <Plug>(go-def-vertical)
         " :GoDef but opens in a horizontal split
-        autocmd FileType go nmap <leader>gs <Plug>(go-def-split)
+        autocmd FileType go nnoremap <localleader>s <Plug>(go-def-split)
 
         " :GoAlternate  commands :A, :AV, :AS and :AT
         autocmd Filetype go command! -bang A call go#alternate#Switch(<bang>0, 'edit')
@@ -492,19 +510,6 @@ function! LoadAle()
     let g:ale_set_quickfix=1
     let g:ale_lint_on_text_changed='never'
     let g:ale_linters = {'go':['gometalinter','gofmt']}
-endfunction
-Plug 'vim-syntastic/syntastic',{'for': ['cpp', 'c']}
-function! LoadSyntastic()
-    let g:syntastic_always_populate_loc_list = 1
-    let g:syntastic_auto_loc_list = 1
-    let g:syntastic_check_on_open = 1
-    let g:syntastic_check_on_wq = 0
-    let g:syntastic_cpp_checkers = ['clang_check']
-    let g:syntastic_c_checkers = ['clang_check']
-    let g:syntastic_clang_check_config_file = '.clang'
-
-    " let g:syntastic_go_checkers = ['golint', 'govec', 'gometalinter']
-    " let g:syntastic_go_gometalinter_args = ['--disable-all', '--enable=errcheck']
 endfunction
 
 " 自动补全
@@ -548,21 +553,22 @@ function! LoadYcm()
     let g:ycm_seed_identifiers_with_syntax = 1
     let g:ycm_semantic_triggers =  {'c' : ['->', '.'], 'objc' : ['->', '.'], 'ocaml' : ['.', '#'], 'cpp,objcpp' : ['->', '.', '::'], 'php' : ['->', '::'], 'cs,java,javascript,vim,coffee,python,scala,go' : ['.'], 'ruby' : ['.', '::']}
     set completeopt-=preview
-    nnoremap <leader>j :YcmCompleter GoToDefinitionElseDeclaration<CR>"
+    nnoremap <Leader>j :YcmCompleter GoToDefinitionElseDeclaration<CR>"
 endfunction
 Plug 'jiangmiao/auto-pairs'
 Plug 'SirVer/ultisnips'
+Plug 'honza/vim-snippets'
 function! LoadUltisnips()
-    let g:UltiSnipsSnippetDirectories=["mysnippets"] " snippets位置
-    let g:UltiSnipsExpandTrigger="<leader><tab>" " 防止和ycm冲突
-    let g:UltiSnipsJumpForwardTrigger="<leader><tab>"
-    let g:UltiSnipsJumpBackwardTrigger="<leader><s-tab>"
+    let g:UltiSnipsExpandTrigger="<C-j>"
 endfunction
 
 call plug#end()
 
 if filereadable(expand("~/.vim/bundle/seoul256.vim/colors/seoul256.vim"))
-    execute LoadColorSchemeSeoul256()
+    if filereadable(expand("~/.vim/bundle/vim-airline/plugin/airline.vim"))
+        execute LoadAirline('gruvbox')
+    endif
+    execute LoadColorSchemeGruvbox()
 endif
 
 if filereadable(expand("~/.vim/bundle/vim-emoji/README.md"))
@@ -601,10 +607,6 @@ if filereadable(expand("~/.vim/bundle/ale/plugin/ale.vim"))
     execute LoadAle()
 endif
 
-if filereadable(expand("~/.vim/bundle/syntastic/plugin/syntastic.vim"))
-    execute LoadSyntastic()
-endif
-
 if filereadable(expand("~/.vim/bundle/YouCompleteMe/plugin/youcompleteme.vim"))
     execute LoadYcm()
 endif
@@ -640,10 +642,10 @@ noremap gk k
 nnoremap Y y$
 vnoremap < <gv
 vnoremap > >gv
-nnoremap <leader>q :q<CR>
-nnoremap <leader>w :w<CR>
-nnoremap <leader>WQ :wa<CR>:q<CR>
-nnoremap <leader>Q :qa!<CR>
+nnoremap <Leader>q :q<CR>
+nnoremap <Leader>w :w<CR>
+nnoremap <Leader>WQ :wa<CR>:q<CR>
+nnoremap <Leader>Q :qa!<CR>
 
 nnoremap <C-w> <C-w>w
 nnoremap <tab> <C-w>w
@@ -652,21 +654,19 @@ nnoremap <C-h> <C-w>h
 nnoremap <C-k> <C-w>k
 nnoremap <C-j> <C-w>j
 
-nnoremap <F4> :call GeneratorTags()<cr><cr><cr><cr>
+nnoremap <F4> :call GeneratorTags()<cr><cr>
 
-" 不确认、非整词
-nnoremap <leader>r :call Replace(0, 0, input('Replace '.expand('<cword>').' with: '))<CR>
 " 不确认、整词
-nnoremap <leader>rw :call Replace(0, 1, input('Replace '.expand('<cword>').' with: '))<CR>
+nnoremap <Leader>rw :call Replace(0, 1, input('Replace '.expand('<cword>').' with: '))<CR>
 " 确认、非整词
-nnoremap <leader>rc :call Replace(1, 0, input('Replace '.expand('<cword>').' with: '))<CR>
+nnoremap <Leader>rc :call Replace(1, 0, input('Replace '.expand('<cword>').' with: '))<CR>
 " 确认、整词
-nnoremap <leader>rcw :call Replace(1, 1, input('Replace '.expand('<cword>').' with: '))<CR>
-nnoremap <leader>rwc :call Replace(1, 1, input('Replace '.expand('<cword>').' with: '))<CR>
+nnoremap <Leader>rcw :call Replace(1, 1, input('Replace '.expand('<cword>').' with: '))<CR>
+nnoremap <Leader>rwc :call Replace(1, 1, input('Replace '.expand('<cword>').' with: '))<CR>
 
 nnoremap <silent> <F10> :call StripTrailingWhitespace()<CR>
-vnoremap <Space>g :call VisualSelection()<CR>
-nnoremap <Space>g :Ag 
+vnoremap <Leader>fg :call VisualSelection()<CR>
+nnoremap <Leader>fg :Ag 
 
 "nnoremap <silent> <F11> :call ToggleFullscreen()<CR>
 " }}}
