@@ -530,7 +530,7 @@ endfunction
 Plug 'buoto/gotests-vim'
 
 " 语法检测
-Plug 'w0rp/ale',{'for': ['go']}
+Plug 'w0rp/ale',{'for': ['go','cpp','c']}
 function! LoadAle()
     let g:ale_open_list=1
     let g:ale_set_quickfix=1
