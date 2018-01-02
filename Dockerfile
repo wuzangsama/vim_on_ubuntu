@@ -29,6 +29,8 @@ RUN apt update -y \
 # 安装vim需要的工具包
     && apt install -y cmake \
     && apt install -y clang \
+    && apt install -y libclang-dev \
+    && apt install -y openssl \
     && apt install -y ctags \
     && apt install -y cscope \
     && apt install -y python \
@@ -113,13 +115,15 @@ RUN cd /usr/local/src \
     && cd .. \
     && rm -rf fonts/ \
 # 安装rtags
-    && git clone --recursive https://github.com/Andersbakken/rtags.git \
-    && cd rtags \
+    && wget https://andersbakken.github.io/rtags-releases/rtags-2.16.tar.gz \
+    && tar zxvf rtags-2.16.tar.gz \
+    && cd rtags-2.16 \
     && cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 . \
     && make \
     && make install \
     && cd .. \
-    && rm -rf rtags/ \
+    && rm -rf rtags-2.16/ \
+    && rm -rf rtags-2.16.tar.gz \
 # 安装vim初次启动需要的插件
     && curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
         https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim \
