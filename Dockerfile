@@ -3,7 +3,7 @@ FROM ubuntu:17.10
 MAINTAINER Haifeng Zhang "zhanghf@zailingtech.com"
 
 # 设置go相关环境变量
-ENV GOLANG_VERSION 1.9.1
+ENV GOLANG_VERSION 1.9.2
 ENV GOPATH /go
 ENV PATH $GOPATH/bin:/usr/local/go/bin:$PATH
 # 设置locale，进入终端可以输入中文
@@ -56,7 +56,7 @@ RUN apt update -y \
 # 安装go
 RUN goRelArch='linux-amd64' \
     && url="https://golang.org/dl/go${GOLANG_VERSION}.${goRelArch}.tar.gz" \
-    && export https_proxy=172.18.30.248:1080 \
+    # && export https_proxy=172.18.30.248:1080 \
     && wget -O go.tgz "$url" \
     && tar -C /usr/local -xzf go.tgz \
     && rm go.tgz \
@@ -86,7 +86,7 @@ COPY .vimrc /root/
 RUN cd /usr/local/src \
     && git clone https://github.com/vim/vim.git \
     && cd vim \
-    && git checkout v8.0.1236 \
+    && git checkout v8.0.1300 \
     && ./configure --prefix=/usr \
         --with-features=huge \
         --enable-multibyte \
