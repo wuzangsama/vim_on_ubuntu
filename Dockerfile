@@ -77,6 +77,7 @@ RUN goRelArch='linux-amd64' \
     && go get github.com/josharian/impl \
     && go get github.com/dominikh/go-tools/cmd/keyify \
     && go get github.com/fatih/motion \
+    && go get -u github.com/golang/dep/cmd/dep \
     && go get -u github.com/cweill/gotests/...
 
 # 安装vim
