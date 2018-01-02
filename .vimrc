@@ -212,7 +212,7 @@ function! LoadRainbow()
                 \	}
                 \}
 endfunction
-Plug 'junegunn/vim-emoji'
+" Plug 'junegunn/vim-emoji'
 function! LoadEmoji()
     let g:gitgutter_sign_added = emoji#for('small_blue_diamond')
     let g:gitgutter_sign_modified = emoji#for('small_orange_diamond')
@@ -394,7 +394,7 @@ function! LoadGoyoLimelight()
     autocmd! User GoyoEnter Limelight
     autocmd! User GoyoLeave Limelight!
 endfunction
-Plug 'junegunn/vim-xmark', { 'do': 'make' }
+" Plug 'junegunn/vim-xmark', { 'do': 'make' }
 
 " 所有语言
 Plug 'junegunn/vim-easy-align'
@@ -410,6 +410,32 @@ Plug 'Shougo/echodoc.vim'
 " CPP
 Plug 'octol/vim-cpp-enhanced-highlight',{'for': 'cpp'}
 Plug 'lyuts/vim-rtags', { 'for': ['c', 'cpp'] }
+function! LoadRtags()
+    let g:rtagsUseDefaultMappings=0
+
+    augroup cpprtags
+        autocmd!
+        autocmd FileType c,cpp nnoremap <silent> <localleader>ri :call rtags#SymbolInfo()<CR>
+        autocmd FileType c,cpp nnoremap <silent> <localleader>rj :call rtags#JumpTo(g:SAME_WINDOW)<CR>
+        autocmd FileType c,cpp nnoremap <silent> <localleader>rJ :call rtags#JumpTo(g:SAME_WINDOW, { '--declaration-only' : '' })<CR>
+        autocmd FileType c,cpp nnoremap <silent> <localleader>rS :call rtags#JumpTo(g:H_SPLIT)<CR>
+        autocmd FileType c,cpp nnoremap <silent> <localleader>rV :call rtags#JumpTo(g:V_SPLIT)<CR>
+        autocmd FileType c,cpp nnoremap <silent> <localleader>rT :call rtags#JumpTo(g:NEW_TAB)<CR>
+        autocmd FileType c,cpp nnoremap <silent> <localleader>rp :call rtags#JumpToParent()<CR>
+        autocmd FileType c,cpp nnoremap <silent> <localleader>rf :call rtags#FindRefs()<CR>
+        autocmd FileType c,cpp nnoremap <silent> <localleader>rF :call rtags#FindRefsCallTree()<CR>
+        autocmd FileType c,cpp nnoremap <silent> <localleader>rn :call rtags#FindRefsByName(input("Pattern? ", "", "customlist,rtags#CompleteSymbols"))<CR>
+        autocmd FileType c,cpp nnoremap <silent> <localleader>rs :call rtags#FindSymbols(input("Pattern? ", "", "customlist,rtags#CompleteSymbols"))<CR>
+        autocmd FileType c,cpp nnoremap <silent> <localleader>rr :call rtags#ReindexFile()<CR>
+        autocmd FileType c,cpp nnoremap <silent> <localleader>rl :call rtags#ProjectList()<CR>
+        autocmd FileType c,cpp nnoremap <silent> <localleader>rw :call rtags#RenameSymbolUnderCursor()<CR>
+        autocmd FileType c,cpp nnoremap <silent> <localleader>rv :call rtags#FindVirtuals()<CR>
+        autocmd FileType c,cpp nnoremap <silent> <localleader>rb :call rtags#JumpBack()<CR>
+        autocmd FileType c,cpp nnoremap <silent> <localleader>rC :call rtags#FindSuperClasses()<CR>
+        autocmd FileType c,cpp nnoremap <silent> <localleader>rc :call rtags#FindSubClasses()<CR>
+        autocmd FileType c,cpp nnoremap <silent> <localleader>rd :call rtags#Diagnostics()<CR>
+    augroup END
+endfunction
 Plug 'derekwyatt/vim-fswitch',{'for': 'cpp'}
 function! LoadFswitch()
     augroup cppswitch
@@ -581,6 +607,10 @@ if filereadable(expand("~/.vim/bundle/goyo.vim/plugin/goyo.vim"))
     if filereadable(expand("~/.vim/bundle/limelight.vim/plugin/limelight.vim"))
         exec LoadGoyoLimelight()
     endif
+endif
+
+if filereadable(expand("~/.vim/bundle/vim-rtags/plugin/rtags.vim"))
+    execute LoadRtags()
 endif
 
 if filereadable(expand("~/.vim/bundle/vim-fswitch/plugin/fswitch.vim"))

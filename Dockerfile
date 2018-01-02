@@ -112,6 +112,14 @@ RUN cd /usr/local/src \
     && ./install.sh \
     && cd .. \
     && rm -rf fonts/ \
+# 安装rtags
+    && git clone --recursive https://github.com/Andersbakken/rtags.git \
+    && cd rtags \
+    && cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 . \
+    && make \
+    && make install \
+    && cd .. \
+    && rm -rf rtags/ \
 # 安装vim初次启动需要的插件
     && curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
         https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim \
