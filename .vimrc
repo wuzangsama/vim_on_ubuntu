@@ -366,6 +366,7 @@ Plug 'airblade/vim-gitgutter'
 Plug 'junegunn/gv.vim'
 Plug 'junegunn/vim-slash'
 Plug 'junegunn/vim-peekaboo'
+Plug 'nvie/vim-togglemouse'
 
 " 写作
 Plug 'junegunn/goyo.vim'
@@ -530,15 +531,18 @@ endfunction
 Plug 'buoto/gotests-vim'
 
 " 语法检测
-Plug 'w0rp/ale',{'for': ['go','cpp','c']}
-function! LoadAle()
-    let g:ale_open_list=1
-    let g:ale_set_quickfix=1
-    let g:ale_lint_on_text_changed='never'
+Plug 'vim-syntastic/syntastic'
+function! LoadSyntastic()
+    let g:syntastic_always_populate_loc_list = 1
+    let g:syntastic_auto_loc_list = 1
+    let g:syntastic_check_on_open = 1
+    let g:syntastic_check_on_wq = 0
+    let g:syntastic_cpp_checkers = ['clang_check']
+    let g:syntastic_c_checkers = ['clang_check']
+    let g:syntastic_clang_check_config_file = '.clang'
 
-    let g:ale_linters = {'go':['gometalinter','gofmt'], 'cpp':['clangcheck','clangtidy'], 'c':['clangtidy']}
-
-    let g:ale_cpp_clang_options='-std=c++11 -Wall'
+    let g:syntastic_go_checkers = ['golint', 'govec', 'gometalinter']
+    let g:syntastic_go_gometalinter_args = ['--disable-all', '--enable=errcheck']
 endfunction
 
 " 自动补全
@@ -636,8 +640,8 @@ if filereadable(expand("~/.vim/bundle/DoxygenToolkit.vim/plugin/DoxygenToolkit.v
     execute LoadDoxygen()
 endif
 
-if filereadable(expand("~/.vim/bundle/ale/plugin/ale.vim"))
-    execute LoadAle()
+if filereadable(expand("~/.vim/bundle/syntastic/plugin/syntastic.vim"))
+    execute LoadSyntastic()
 endif
 
 if filereadable(expand("~/.vim/bundle/YouCompleteMe/plugin/youcompleteme.vim"))
