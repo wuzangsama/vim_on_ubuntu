@@ -464,7 +464,7 @@ function! LoadDoxygen()
 endfunction
 
 " GoLang
-Plug 'fatih/vim-go'
+Plug 'fatih/vim-go', { 'branch': 'v1.16' }
 function! LoadVimGo()
     let g:go_fmt_command = "goimports"
     let g:go_autodetect_gopath = 1
@@ -485,30 +485,30 @@ function! LoadVimGo()
         autocmd!
 
         " :GoBuild and :GoTestCompile
-        autocmd FileType go nnoremap <localleader>b :<C-u>call <SID>build_go_files()<CR>
+        autocmd FileType go nmap <silent> <localleader>b :<C-u>call <SID>build_go_files()<CR>
 
         " :GoTest
-        autocmd FileType go nnoremap <localleader>t  <Plug>(go-test)
+        autocmd FileType go nmap <silent> <localleader>t  <Plug>(go-test)
 
         " :GoRun
-        autocmd FileType go nnoremap <localleader>r  <Plug>(go-run)
+        autocmd FileType go nmap <silent> <localleader>r  <Plug>(go-run)
 
         " :GoDoc
-        autocmd FileType go nnoremap <localleader>d <Plug>(go-doc)
+        autocmd FileType go nmap <silent> <localleader>d <Plug>(go-doc)
 
         " :GoCoverageToggle
-        autocmd FileType go nnoremap <localleader>c <Plug>(go-coverage-toggle)
+        autocmd FileType go nmap <silent> <localleader>c <Plug>(go-coverage-toggle)
 
         " :GoInfo
-        autocmd FileType go nnoremap <localleader>i <Plug>(go-info)
+        autocmd FileType go nmap <silent> <localleader>i <Plug>(go-info)
 
         " :GoMetaLinter
-        autocmd FileType go nnoremap <localleader>l <Plug>(go-metalinter)
+        autocmd FileType go nmap <silent> <localleader>l <Plug>(go-metalinter)
 
         " :GoDef but opens in a vertical split
-        autocmd FileType go nnoremap <localleader>v <Plug>(go-def-vertical)
+        autocmd FileType go nmap <silent> <localleader>v <Plug>(go-def-vertical)
         " :GoDef but opens in a horizontal split
-        autocmd FileType go nnoremap <localleader>s <Plug>(go-def-split)
+        autocmd FileType go nmap <silent> <localleader>s <Plug>(go-def-split)
 
         " :GoAlternate  commands :A, :AV, :AS and :AT
         autocmd Filetype go command! -bang A call go#alternate#Switch(<bang>0, 'edit')
