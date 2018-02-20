@@ -464,7 +464,7 @@ function! LoadDoxygen()
 endfunction
 
 " GoLang
-Plug 'fatih/vim-go', { 'branch': 'v1.16' }
+Plug 'fatih/vim-go', { 'tag': 'v1.16' }
 function! LoadVimGo()
     let g:go_fmt_command = "goimports"
     let g:go_autodetect_gopath = 1
