@@ -712,6 +712,7 @@ nnoremap <Leader>q :q<CR>
 nnoremap <Leader>w :w<CR>
 nnoremap <Leader>WQ :wa<CR>:q<CR>
 nnoremap <Leader>Q :qa!<CR>
+nnoremap <Leader>cd :lcd %:h<CR>
 
 nnoremap <C-w> <C-w>w
 nnoremap <tab> <C-w>w
