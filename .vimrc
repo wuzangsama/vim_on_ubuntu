@@ -15,11 +15,11 @@ set encoding=utf-8 fileencoding=utf-8 fileformats=unix,mac,dos
 set fileencodings=ucs-bom,utf-8,cp936,gb18030,big5,euc-jp,euc-kr,latin1
 
 " 界面相关
-silent! set number relativenumber background=dark nowrap guioptions-=lLrRmT
+silent! set number relativenumber background=dark nowrap guioptions=
 silent! set ruler laststatus=2 noshowmode cursorline colorcolumn=80
 silent! set list listchars=tab:›\ ,trail:• scrolloff=3
 silent! set mouse=a mousehide guicursor=a:block-blinkon0 helplang=cn
-if has('gui_running') | set guifont=Source\ Code\ Pro\ for\ Powerline:h14 | else | set t_Co=256 | endif
+if has('gui_running') | set guifont=Hack\ Regular\ Nerd\ Font\ Complete:h13 | else | set t_Co=256 | endif
 
 " 编辑
 silent! set shiftwidth=4 expandtab tabstop=4 softtabstop=4
@@ -28,8 +28,8 @@ silent! set backspace=indent,eol,start formatoptions=cmMj
 silent! set tags=tags,./tags,../tags,../../tags,../../../tags
 
 " 剪切板
-silent! set clipboard=unnamed
-silent! set clipboard+=unnamedplus
+" silent! set clipboard=unnamed
+" silent! set clipboard+=unnamedplus
 
 " 搜索
 silent! set ignorecase smartcase incsearch hlsearch magic
@@ -45,7 +45,7 @@ silent! set wildignore+=*.o,*.obj,*.exe,*.dll,*.so,*.manifest
 silent! set updatetime=300 timeout timeoutlen=500 ttimeout ttimeoutlen=50 ttyfast lazyredraw
 
 " 退出保留显示
-" set t_ti= t_te=
+set t_ti= t_te=
 
 syntax enable
 syntax on
@@ -59,19 +59,6 @@ filetype indent on
 function! GeneratorTags()
     exec "!ctags -R --sort=1 --c++-kinds=+p --fields=+iaS --extra=+q --language-force=C++ ."
 endfunc
-
-function! StatuslineExpr()
-  let mod = "%{&modified ? '[+] ' : !&modifiable ? '[x] ' : ''}"
-  let ro  = "%{&readonly ? '[RO] ' : ''}"
-  let ft  = "%{len(&filetype) ? '['.&filetype.'] ' : ''}"
-  let fug = "%{exists('g:loaded_fugitive') ? fugitive#statusline() : ''}"
-  let sep = ' %= '
-  let pos = ' %-12(%l : %c%V%) '
-  let pct = ' %P'
-
-  return '[%n] %F %<'.mod.ro.ft.fug.sep.pos.'%*'.pct
-endfunction
-" let &statusline = StatuslineExpr()
 
 " 替换函数。参数说明：
 " confirm：是否替换前逐一确认
@@ -122,12 +109,6 @@ function! VisualSelection() range
     let @" = l:saved_reg
 endfunction
 
-" 窗口最大化
-function! ToggleFullscreen()
-    call system("wmctrl -ir " . v:windowid . " -b toggle,fullscreen")
-endfunction
-" }}}
-
 " Auto group {{{
 augroup vimrc
   autocmd!
@@ -138,7 +119,6 @@ autocmd vimrc BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe
 autocmd vimrc FileType haskell,puppet,ruby,yaml setlocal expandtab shiftwidth=2 softtabstop=2
 autocmd vimrc FileType markdown,text setlocal wrap
 autocmd vimrc FileType c,cpp,java,php,javascript,python,rust,xml,yaml,perl,sql autocmd BufWritePre <buffer> call StripTrailingWhitespace()
-" autocmd vimrc VimEnter * call ToggleFullscreen()
 " autocmd vimrc BufWritePost $MYVIMRC source $MYVIMRC " 让配置变更立即生效
 " }}}
 
@@ -158,8 +138,18 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 function! LoadAirline(theme)
     let g:airline_theme=a:theme
-    let g:airline_symbols_ascii = 1
     let g:airline_detect_spell=0
+        if !exists('g:airline_symbols')
+        let g:airline_symbols = {}
+    endif
+    let g:airline_left_sep = '▶'
+    let g:airline_left_alt_sep = '❯'
+    let g:airline_right_sep = '◀'
+    let g:airline_right_alt_sep = '❮'
+    let g:airline_symbols.linenr = '¶'
+    let g:airline_symbols.branch = '⎇'
+    " 是否打开tabline
+    let g:airline#extensions#tabline#enabled = 1
 endfunction
 Plug 'tomasr/molokai'
 function! LoadColorSchemeMolokai()
@@ -186,6 +176,7 @@ function! LoadColorSchemeSeoul256()
 
     colorscheme seoul256
 endfunction
+
 Plug 'luochen1990/rainbow'
 function! LoadRainbow()
     let g:rainbow_active = 1
@@ -212,7 +203,8 @@ function! LoadRainbow()
                 \	}
                 \}
 endfunction
-" Plug 'junegunn/vim-emoji'
+
+Plug 'junegunn/vim-emoji'
 function! LoadEmoji()
     let g:gitgutter_sign_added = emoji#for('small_blue_diamond')
     let g:gitgutter_sign_modified = emoji#for('small_orange_diamond')
@@ -406,7 +398,10 @@ function! LoadEasyAlign()
     nmap ga <Plug>(EasyAlign)
 endfunction
 Plug 'tomtom/tcomment_vim' " 注释 gcc gcu gcap
-Plug 'Shougo/echodoc.vim'
+" Plug 'Shougo/echodoc.vim'
+
+" Dockerfile
+Plug 'ekalinin/Dockerfile.vim', {'for' : 'Dockerfile'}
 
 " CPP
 Plug 'octol/vim-cpp-enhanced-highlight',{'for': 'cpp'}
@@ -464,18 +459,45 @@ function! LoadDoxygen()
 endfunction
 
 " GoLang
-Plug 'fatih/vim-go', { 'tag': 'v1.16' }
+Plug 'fatih/vim-go', { 'tag': 'v1.17' }
 function! LoadVimGo()
+    let g:go_fmt_fail_silently = 1
     let g:go_fmt_command = "goimports"
-    let g:go_autodetect_gopath = 1
+    let g:go_fmt_options = {
+                \ 'goimports': '-local do/',
+                \ }
+
+    let g:go_debug_windows = {
+                \ 'vars':  'leftabove 35vnew',
+                \ 'stack': 'botright 10new',
+                \ }
+
+    let g:go_sameid_search_enabled = 1
+
+    let g:go_test_prepend_name = 1
     let g:go_list_type = "quickfix"
 
-    let g:go_highlight_types = 1
-    let g:go_highlight_fields = 1
-    let g:go_highlight_functions = 1
-    let g:go_highlight_methods = 1
-    let g:go_highlight_extra_types = 1
-    let g:go_highlight_generate_tags = 1
+    let g:go_auto_type_info = 0
+    let g:go_auto_sameids = 0
+
+    let g:go_def_mode = "guru"
+    let g:go_echo_command_info = 1
+    let g:go_gocode_autobuild = 1
+    let g:go_gocode_unimported_packages = 1
+
+    let g:go_autodetect_gopath = 1
+
+    let g:go_metalinter_autosave_enabled = ['vet', 'golint']
+    let g:go_highlight_space_tab_error = 0
+    let g:go_highlight_array_whitespace_error = 0
+    let g:go_highlight_trailing_whitespace_error = 0
+    let g:go_highlight_extra_types = 0
+    let g:go_highlight_build_constraints = 1
+    let g:go_highlight_types = 0
+    let g:go_highlight_format_strings = 0
+
+    let g:go_modifytags_transform = 'camelcase'
+    let g:go_fold_enable = []
 
     " Open :GoDeclsDir with ctrl-g
     nnoremap <C-g> :GoDeclsDir<cr>
@@ -510,6 +532,9 @@ function! LoadVimGo()
         " :GoDef but opens in a horizontal split
         autocmd FileType go nmap <silent> <localleader>s <Plug>(go-def-split)
 
+        " create doc
+        autocmd FileType go nmap <silent> <localleader>a :<C-u>call <SID>create_go_doc_comment()<CR>
+
         " :GoAlternate  commands :A, :AV, :AS and :AT
         autocmd Filetype go command! -bang A call go#alternate#Switch(<bang>0, 'edit')
         autocmd Filetype go command! -bang AV call go#alternate#Switch(<bang>0, 'vsplit')
@@ -526,6 +551,12 @@ function! LoadVimGo()
         elseif l:file =~# '^\f\+\.go$'
             call go#cmd#Build(0)
         endif
+    endfunction
+
+    function! s:create_go_doc_comment()
+        norm "zyiw
+        execute ":put! z"
+        execute ":norm I// \<Esc>$"
     endfunction
 endfunction
 Plug 'buoto/gotests-vim'
@@ -597,12 +628,10 @@ endfunction
 
 call plug#end()
 
-if filereadable(expand("~/.vim/bundle/seoul256.vim/colors/seoul256.vim"))
-    if filereadable(expand("~/.vim/bundle/vim-airline/plugin/airline.vim"))
-        execute LoadAirline('gruvbox')
-    endif
-    execute LoadColorSchemeGruvbox()
+if filereadable(expand("~/.vim/bundle/vim-airline/plugin/airline.vim"))
+    execute LoadAirline('gruvbox')
 endif
+execute LoadColorSchemeGruvbox()
 
 if filereadable(expand("~/.vim/bundle/vim-emoji/README.md"))
     if filereadable(expand("~/.vim/bundle/vim-gitgutter/plugin/gitgutter.vim"))
@@ -701,9 +730,6 @@ nnoremap <Leader>rc :call Replace(1, 0, input('Replace '.expand('<cword>').' wit
 nnoremap <Leader>rcw :call Replace(1, 1, input('Replace '.expand('<cword>').' with: '))<CR>
 nnoremap <Leader>rwc :call Replace(1, 1, input('Replace '.expand('<cword>').' with: '))<CR>
 
-nnoremap <silent> <F10> :call StripTrailingWhitespace()<CR>
 vnoremap <Leader>fg :call VisualSelection()<CR>
 nnoremap <Leader>fg :Ag 
-
-"nnoremap <silent> <F11> :call ToggleFullscreen()<CR>
 " }}}
