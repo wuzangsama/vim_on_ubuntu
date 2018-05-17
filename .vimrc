@@ -150,6 +150,7 @@ function! LoadAirline(theme)
     let g:airline_symbols.branch = '⎇'
     " 是否打开tabline
     let g:airline#extensions#tabline#enabled = 1
+    let g:airline#extensions#tabline#formatter = 'unique_tail'
 endfunction
 Plug 'tomasr/molokai'
 function! LoadColorSchemeMolokai()
@@ -218,6 +219,7 @@ Plug 'easymotion/vim-easymotion'
 Plug 'vim-scripts/matchit.zip'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
+Plug 'tpope/vim-unimpaired'
 Plug 'Shougo/vinarise.vim'
 Plug 'shougo/vimshell.vim'
 Plug 'Shougo/vimproc.vim', {'do': 'make'}
