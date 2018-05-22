@@ -151,6 +151,19 @@ function! LoadAirline(theme)
     " 是否打开tabline
     let g:airline#extensions#tabline#enabled = 1
     let g:airline#extensions#tabline#formatter = 'unique_tail'
+    let g:airline#extensions#tabline#show_tab_nr = 1
+    let g:airline#extensions#tabline#buffer_idx_mode = 1
+    nmap <leader>1 <Plug>AirlineSelectTab1
+    nmap <leader>2 <Plug>AirlineSelectTab2
+    nmap <leader>3 <Plug>AirlineSelectTab3
+    nmap <leader>4 <Plug>AirlineSelectTab4
+    nmap <leader>5 <Plug>AirlineSelectTab5
+    nmap <leader>6 <Plug>AirlineSelectTab6
+    nmap <leader>7 <Plug>AirlineSelectTab7
+    nmap <leader>8 <Plug>AirlineSelectTab8
+    nmap <leader>9 <Plug>AirlineSelectTab9
+    nmap <leader>- <Plug>AirlineSelectPrevTab
+    nmap <leader>+ <Plug>AirlineSelectNextTab
 endfunction
 Plug 'tomasr/molokai'
 function! LoadColorSchemeMolokai()
@@ -177,6 +190,20 @@ function! LoadColorSchemeSeoul256()
 
     colorscheme seoul256
 endfunction
+
+Plug 'ryanoasis/vim-devicons'
+function! LoadDevicons()
+    " loading the plugin
+    let g:webdevicons_enable = 1
+    " adding the column to vimfiler
+    let g:webdevicons_enable_vimfiler = 1
+    " adding to vim-airline's tabline
+    let g:webdevicons_enable_airline_tabline = 1
+    " adding to vim-airline's statusline
+    let g:webdevicons_enable_airline_statusline = 1
+endfunction
+
+Plug 'mhinz/vim-startify'
 
 Plug 'luochen1990/rainbow'
 function! LoadRainbow()
@@ -264,7 +291,7 @@ function! LoadVimFiler()
     augroup vfinit
         au!
         autocmd FileType vimfiler call s:vimfilerinit()
-        autocmd vimenter * if !argc() | VimFilerExplorer | endif " 无文件打开显示vimfiler
+        " autocmd vimenter * if !argc() | VimFilerExplorer | endif " 无文件打开显示vimfiler
         autocmd BufEnter * if (!has('vim_starting') && winnr('$') == 1 && &filetype ==# 'vimfiler') |
                     \ q | endif
     augroup END
@@ -578,6 +605,20 @@ function! LoadSyntastic()
     let g:syntastic_go_gometalinter_args = ['--disable-all', '--enable=errcheck']
 endfunction
 
+" 语法检测
+" Plug 'w0rp/ale'
+" function! LoadAle()
+"     let g:ale_lint_on_text_changed = 'never'
+"     let g:ale_lint_on_enter = 0
+"     let g:ale_set_loclist = 0
+"     let g:ale_set_quickfix=1
+"     let g:ale_open_list=1
+"
+"     let g:ale_linters = {'go':['gometalinter','gofmt'], 'cpp':['clangcheck','clangtidy'], 'c':['clangtidy']}
+"
+"     let g:ale_cpp_clang_options='-std=c++11 -Wall'
+" endfunction
+
 " 自动补全
 Plug 'Valloric/YouCompleteMe', {'do': './install.py --clang-completer --system-libclang'}
 function! LoadYcm()
@@ -633,7 +674,14 @@ call plug#end()
 if filereadable(expand("~/.vim/bundle/vim-airline/plugin/airline.vim"))
     execute LoadAirline('gruvbox')
 endif
-execute LoadColorSchemeGruvbox()
+
+if filereadable(expand("~/.vim/bundle/gruvbox/README.md"))
+    execute LoadColorSchemeGruvbox()
+endif
+
+if filereadable(expand("~/.vim/bundle/vim-devicons/README.md"))
+    execute LoadDevicons()
+endif
 
 if filereadable(expand("~/.vim/bundle/vim-emoji/README.md"))
     if filereadable(expand("~/.vim/bundle/vim-gitgutter/plugin/gitgutter.vim"))
@@ -674,6 +722,9 @@ endif
 if filereadable(expand("~/.vim/bundle/syntastic/plugin/syntastic.vim"))
     execute LoadSyntastic()
 endif
+" if filereadable(expand("~/.vim/bundle/ale/README.md"))
+"     execute LoadAle()
+" endif
 
 if filereadable(expand("~/.vim/bundle/YouCompleteMe/plugin/youcompleteme.vim"))
     execute LoadYcm()
