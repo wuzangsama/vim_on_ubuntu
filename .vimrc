@@ -142,12 +142,12 @@ function! LoadAirline(theme)
         if !exists('g:airline_symbols')
         let g:airline_symbols = {}
     endif
-    let g:airline_left_sep = '▶'
-    let g:airline_left_alt_sep = '❯'
-    let g:airline_right_sep = '◀'
-    let g:airline_right_alt_sep = '❮'
-    let g:airline_symbols.linenr = '¶'
-    let g:airline_symbols.branch = '⎇'
+    let g:airline_left_sep = "\uE0B0"
+    let g:airline_left_alt_sep = "\uE0B1"
+    let g:airline_right_sep = "\uE0B2"
+    let g:airline_right_alt_sep = "\uE0B3"
+    let g:airline_symbols.linenr = "\uF749"
+    let g:airline_symbols.branch = "\uE0A0"
     " 是否打开tabline
     let g:airline#extensions#tabline#enabled = 1
     let g:airline#extensions#tabline#formatter = 'unique_tail'
@@ -203,8 +203,6 @@ function! LoadDevicons()
     let g:webdevicons_enable_airline_statusline = 1
 endfunction
 
-Plug 'mhinz/vim-startify'
-
 Plug 'luochen1990/rainbow'
 function! LoadRainbow()
     let g:rainbow_active = 1
@@ -232,14 +230,6 @@ function! LoadRainbow()
                 \}
 endfunction
 
-Plug 'junegunn/vim-emoji'
-function! LoadEmoji()
-    let g:gitgutter_sign_added = emoji#for('small_blue_diamond')
-    let g:gitgutter_sign_modified = emoji#for('small_orange_diamond')
-    let g:gitgutter_sign_removed = emoji#for('small_red_triangle')
-    let g:gitgutter_sign_modified_removed = emoji#for('collision')
-endfunction
-
 " 一般功能
 Plug 'Yggdroot/indentLine'
 Plug 'easymotion/vim-easymotion'
@@ -259,11 +249,11 @@ function! LoadVimFiler()
     let g:vimfiler_restore_alternate_file = 1
     let g:vimfiler_tree_indentation = 1
     let g:vimfiler_tree_leaf_icon = ''
-    let g:vimfiler_tree_opened_icon = '▼'
-    let g:vimfiler_tree_closed_icon = '▷'
-    let g:vimfiler_file_icon = ''
-    let g:vimfiler_readonly_file_icon = '*'
-    let g:vimfiler_marked_file_icon = '√'
+    let g:vimfiler_tree_opened_icon = "\uF0D7"
+    let g:vimfiler_tree_closed_icon = "\uF105"
+    " let g:vimfiler_file_icon = ''
+    let g:vimfiler_readonly_file_icon = "\uE0A2"
+    let g:vimfiler_marked_file_icon = "\uFADF"
     "let g:vimfiler_preview_action = 'auto_preview'
     let g:vimfiler_ignore_pattern = [
                 \ '^\.git$',
@@ -291,7 +281,7 @@ function! LoadVimFiler()
     augroup vfinit
         au!
         autocmd FileType vimfiler call s:vimfilerinit()
-        " autocmd vimenter * if !argc() | VimFilerExplorer | endif " 无文件打开显示vimfiler
+        autocmd vimenter * if !argc() | VimFilerExplorer | endif " 无文件打开显示vimfiler
         autocmd BufEnter * if (!has('vim_starting') && winnr('$') == 1 && &filetype ==# 'vimfiler') |
                     \ q | endif
     augroup END
@@ -384,6 +374,12 @@ function! LoadFzf()
 endfunction
 Plug 'tpope/vim-fugitive'
 Plug 'airblade/vim-gitgutter'
+function! LoadGitGutter()
+    let g:gitgutter_sign_added = "\uF457"
+    let g:gitgutter_sign_removed = "\uF458"
+    let g:gitgutter_sign_modified = "\uF459"
+    let g:gitgutter_sign_modified_removed = "\uF45A"
+endfunction
 Plug 'junegunn/gv.vim'
 Plug 'junegunn/vim-slash'
 Plug 'junegunn/vim-peekaboo'
@@ -538,6 +534,9 @@ function! LoadVimGo()
         " :GoBuild and :GoTestCompile
         autocmd FileType go nmap <silent> <localleader>b :<C-u>call <SID>build_go_files()<CR>
 
+        " :GoImplements
+        autocmd FileType go nmap <silent> <localleader>j <Plug>(go-implements)
+
         " :GoTest
         autocmd FileType go nmap <silent> <localleader>t  <Plug>(go-test)
 
@@ -683,12 +682,6 @@ if filereadable(expand("~/.vim/bundle/vim-devicons/README.md"))
     execute LoadDevicons()
 endif
 
-if filereadable(expand("~/.vim/bundle/vim-emoji/README.md"))
-    if filereadable(expand("~/.vim/bundle/vim-gitgutter/plugin/gitgutter.vim"))
-        execute LoadEmoji()
-    endif
-endif
-
 if filereadable(expand("~/.vim/bundle/goyo.vim/plugin/goyo.vim"))
     if filereadable(expand("~/.vim/bundle/limelight.vim/plugin/limelight.vim"))
         exec LoadGoyoLimelight()
@@ -736,6 +729,10 @@ endif
 
 if filereadable(expand("~/.vim/bundle/fzf.vim/plugin/fzf.vim"))
     execute LoadFzf()
+endif
+
+if filereadable(expand("~/.vim/bundle/vim-gitgutter/README.mkd"))
+    execute LoadGitGutter()
 endif
 
 if filereadable(expand("~/.vim/bundle/unite.vim/plugin/unite.vim"))
