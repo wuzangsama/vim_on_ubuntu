@@ -139,14 +139,15 @@ Plug 'vim-airline/vim-airline-themes'
 function! LoadAirline(theme)
     let g:airline_theme=a:theme
     let g:airline_detect_spell=0
-        if !exists('g:airline_symbols')
+    if !exists('g:airline_symbols')
         let g:airline_symbols = {}
     endif
     let g:airline_left_sep = "\uE0B0"
     let g:airline_left_alt_sep = "\uE0B1"
     let g:airline_right_sep = "\uE0B2"
     let g:airline_right_alt_sep = "\uE0B3"
-    let g:airline_symbols.linenr = "\uF749"
+    let g:airline_symbols.linenr = "\uE0A1"
+    let g:airline_symbols.maxlinenr = "\uF749"
     let g:airline_symbols.branch = "\uE0A0"
     " 是否打开tabline
     let g:airline#extensions#tabline#enabled = 1
