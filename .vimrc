@@ -57,7 +57,7 @@ filetype indent on
 " 函数 {{{
 " 生成tags
 function! GeneratorTags()
-    exec "!ctags -R --sort=1 --c++-kinds=+p --fields=+iaS --extra=+q --language-force=C++ ."
+        exec "!ctags -R --sort=1 --c++-kinds=+p --fields=+iaS --extra=+q --language-force=C++ ."
 endfunc
 
 " 替换函数。参数说明：
@@ -238,6 +238,12 @@ Plug 'vim-scripts/matchit.zip'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-unimpaired'
+Plug 'majutsushi/tagbar'
+function! LoadTagbar()
+    nnoremap <F2> :Tagbar<CR>
+    inoremap <F2> <ESC>:Tagbar<CR>
+    vnoremap <F2> <ESC>:Tagbar<CR>
+endfunction
 Plug 'Shougo/vinarise.vim'
 Plug 'shougo/vimshell.vim'
 Plug 'Shougo/vimproc.vim', {'do': 'make'}
@@ -734,6 +740,10 @@ endif
 
 if filereadable(expand("~/.vim/bundle/vim-gitgutter/README.mkd"))
     execute LoadGitGutter()
+endif
+
+if filereadable(expand("~/.vim/bundle/tagbar/README.md"))
+    execute LoadTagbar()
 endif
 
 if filereadable(expand("~/.vim/bundle/unite.vim/plugin/unite.vim"))
